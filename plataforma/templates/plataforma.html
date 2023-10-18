@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+{% endblock %}
+
+{% block titulo %}
+    Operador(a) {{ nome }}
+{% endblock %}
+
+{% block bv %}
+    <div class="bem-vindo">
+        <h1>Bem vindo <b>{{ nome }}</b>, esta é sua área de trabalho &#x1F4A7</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+        <div class="card">
+        <div class="card-body">
+            {% for dados in agua_tratada_grafico_vetor %}
+            <center>
+                    <div class="dados_grafico">
+                    <div class="card text-bg-primary mb-3" style="max-width: 21rem;">
+                    <div class="card-header"> <h6>{{ dados.usuario }} | {{ dados.data_analise_agua }}</h6></div>
+                    <div class="card-body">
+                        pH:  {{ dados.ph }}<br>
+                        Cloro:  {{ dados.cloro }}<br>
+                        Turbidez:  {{ dados.turbidez }}
+                    </div>
+                    </div>
+                    </div>
+            </center>
+                {% endfor %}
+        </div>
+        </div>
+    </div>
+    <div class="col-md-8"><br>
+
+        {% for item in parametro %}
+        <table border="2">
+        <tr>
+            <th> Parâmetro</th>
+            <th>Min.</th>
+            <th>Ideal</th>
+            <th>Max.</th>
+        </tr>
+        <tr>
+            <td> FLUOR</td>
+            <td>{{ item.fluor_min }} ppm</td>
+            <td>{{ item.fluor_ideal }} ppm</td>
+            <td>{{ item.fluor_max }} ppm</td>
+        </tr>
+        <tr>
+            <td> CLORO</td>
+            <td>{{ item.cloro_min }} ppm</td>
+            <td>{{ item.cloro_ideal }} ppm</td>
+            <td>{{ item.cloro_max }} ppm</td>
+        </tr>
+        <tr>
+            <td> PH</td>
+            <td>{{ item.ph_min }}</td>
+            <td>{{ item.ph_ideal }}</td>
+            <td>{{ item.ph_max }}</td>
+        </tr>
+        <tr>
+            <td> COR</td>
+            <td>{{ item.cor_min }} uH</td>
+            <td>{{ item.cor_ideal }} uH</td>
+            <td>{{ item.cor_max }} uH</td>
+        </tr>
+        <tr>
+            <td> TURBIDEZ</td>
+            <td>{{ item.turbidez_min }} uT</td>
+            <td>{{ item.turbidez_ideal }} uT</td>
+            <td>{{ item.turbidez_max }} uT</td>
+        </tr>
+    </table>
+        {% endfor %}
+<hr>
+    {% if avisos %}
+      <div class="card">
+      <div class="card-body">
+          <div class="alert alert-danger" role="alert">
+           {% for msg in avisos %}
+              {{ msg }}
+           {% endfor %}
+    {% endif %}
+          </div>
+
+      </div>
+      </div><br>
+<span class="badge rounded-pill text-bg-dark" style="font-size: 23px;">
+    {{ultimo_operador}} adicionou cal pela última vez no dia {{ultimo_data}}
+</span>
+
+
+
+
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+    <link rel="stylesheet" href="{% static 'plataforma/css/msg.css' %}">
+
+{% endblock %}
+
+{% block titulo %}
+    Mensagem
+{% endblock %}
+
+{% block bv %}
+    <div class="bem-vindo">
+        <h1><b>{{ nome }}</b> - Deixe um AVISO para TODOS</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Conteúdo da primeira coluna -->
+               <br>
+                <form action="{% url 'mensagem' %}" method="post">{% csrf_token %}
+                    <textarea name="msg" rows="5" cols="44"></textarea><br>
+                    <input type="submit" value=" Publicar Mensagem ">
+                </form>
+                      <hr><font color="red" size="6">Data da ultima mensagem: {{data}}</font><hr>
+
+                                              <div class="message">{% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert {{message.tags}}">
+                                        <center>{{message}}</center>
+                                    </div>
+                                {% endfor %}
+                                {% endif %}</div>
+
+            </div>
+            <div class="col-md-6 custom-bg-gray">
+                <!-- Conteúdo da segunda coluna -->
+                <h2><center>Mural de Mensagens</center></h2>
+                {% for buscar_msg in buscar_msg %}
+                <p><font color="blue" size="3" face="verdana">{{ buscar_msg }}</font><hr></p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

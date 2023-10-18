@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+    <link rel="stylesheet" href="{% static 'plataforma/css/inputs.css' %}">
+
+{% endblock %}
+
+{% block titulo %}
+    Análise de água tratada
+{% endblock %}
+
+{% block bv %}
+    <div class="bem-vindo">
+        <h1><b>{{ nome }}</b> - Análise da água tratada</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+<br>
+                              <div class="message">{% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert {{message.tags}}">
+                                        <center>{{message}}</center>
+                                    </div>
+                                {% endfor %}
+                                {% endif %}</div>
+<div class="card">
+  <div class="card-body">
+     <form action="{% url 'agua_tratada' %}" method="post">{% csrf_token %}
+     <center>
+         <label class="lbl_cloro">Cloro</label> <input type="text" name="cloro" placeholder="0" value="{{ cloro }}" onfocus="limparCampo(this)">
+         <label class="lbl_ph">pH</label> <input type="text" name="ph" placeholder="0" value="{{ ph }}" onfocus="limparCampo(this)">
+         <label class="lbl_cor">Cor</label> <input type="text" name="cor" placeholder="0" value="{{ cor }}" onfocus="limparCampo(this)">
+         <label class="lbl_turbidez">Turbidez</label> <input type="text" name="turbidez" placeholder="0" value="{{ turbidez }}" onfocus="limparCampo(this)">
+         <br><br>
+         <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio">{{relatorio}}</textarea>
+         <br><br>
+        <button type="submit" class="btn btn-success">Salvar</button>
+     </center>
+     </form>
+  </div>
+</div>
+<script>
+function limparCampo(element) {
+    element.value = '';
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+body{
+    background-image: linear-gradient(70deg, #D3D3D3, 	#FFFFFF);
+}
+.bem-vindo{
+    justify-content: center;
+    color: blue;
+    display: flex;
+}
+.btns{
+    justify-content: center;
+    display: flex;
+}
+.badge.rounded-pill.text-bg-warning,
+.badge.rounded-pill.text-bg-info {
+    font-size: 20px; /* Defina o tamanho desejado */
+}
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.th, td{
+    border: 1px solid black;
+    padding: 5px;
+    font-size: 15px; /* Tamanho da fonte para cabeçalhos (th) e células (td) */
+    color: blue;
+    background-color: #f2f2f2;
+}
+.quantidade{
+    color: green;
+    font-size: 30px;
+}
+.quantidade_numero{
+    color: red;
+    font-size: 70px;
+}

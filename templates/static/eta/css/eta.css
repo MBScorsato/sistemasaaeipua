@@ -1,0 +1,11 @@
+.div_midia {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cor-data{
+    color: blue;
+}
+.cor-mensagem{
+    color: #363636;
+}

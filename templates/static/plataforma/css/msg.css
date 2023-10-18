@@ -1,0 +1,21 @@
+input[type="text"] {
+  width: 1000px; /* Altere o valor conforme necessário */
+  font-size: 20px;
+}
+
+input[type="submit"] {
+  background-color: #3498db; /* Cor de fundo */
+  color: #ffffff; /* Cor do texto */
+  padding: 15px 30px; /* Espaçamento interno (ajuste conforme necessário) */
+  border: none; /* Remover a borda padrão */
+  cursor: pointer; /* Cursor estilo mão quando o mouse passa por cima */
+  border-radius: 10px; /* Cantos arredondados */
+  font-size: 31px; /* Tamanho da fonte (ajuste conforme necessário) */
+}
+
+.custom-bg-gray {
+    background-color: #f0f0f0; /* Cor de fundo cinza claro */
+    /* Outros estilos personalizados, se necessário */
+}
+
+

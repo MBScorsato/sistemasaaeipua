@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+    <link rel="stylesheet" href="{% static 'plataforma/css/inputs.css' %}">
+{% endblock %}
+
+{% block titulo %}
+    Análise de água Bruta/Decantada
+{% endblock %}
+
+{% block bv %}
+    <div class="bem-vindo">
+        <h1><b>{{ nome }}</b> - Análise da água Bruta/Decantada</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+<br>
+<div class="message">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {{message.tags}}">
+        <center>{{message}}</center>
+    </div>
+    {% endfor %}
+    {% endif %}</div>
+<div class="card">
+  <div class="card-body">
+     <form action="{% url 'agua_bruta' %}" method="post">{% csrf_token %}
+     <center>
+         <span class="badge rounded-pill text-bg-info">Decantada</span>
+         <label class="lbl_ph_decantada">pH</label> <input type="text" name="decantada_ph" placeholder="0" value="{{ decantada_ph }}" onfocus="limparCampo(this)">
+         <label class="lbl_cor">Cor</label> <input type="text" name="decantada_cor" placeholder="0" value="{{ decantada_cor }}" onfocus="limparCampo(this)">
+         <label class="lbl_turbidez">Turbidez</label> <input type="text" name="decantada_turbidez" placeholder="0" value="{{ decantada_turbidez }}" onfocus="limparCampo(this)">
+         <br><br>
+         <span class="badge rounded-pill text-bg-warning">Bruta</span>
+         <label class="lbl_ph_decantada">pH</label> <input type="text" name="bruta_ph" placeholder="0" value="{{ bruta_ph }}" onfocus="limparCampo(this)">
+         <label class="lbl_cor">Cor</label> <input type="text" name="bruta_cor" placeholder="0" value="{{ bruta_cor }}" onfocus="limparCampo(this)">
+         <label class="lbl_turbidez">Turbidez</label> <input type="text" name="bruta_turbidez" placeholder="0" value="{{ bruta_turbidez }}" onfocus="limparCampo(this)">
+         <br><br>
+         <label class="lbl_q_eta">Q.ETA</label> <input type="text" name="qeta" placeholder="0" value="{{ qeta }}" onfocus="limparCampo(this)">
+         <label class="lbl_q_pac">Q.PAC</label> <input type="text" name="qpac" placeholder="0" value="{{ qpac }}" onfocus="limparCampo(this)">
+         <label class="lbl_q_pac">Q.CAL</label> <input type="text" name="qcal" placeholder="0" value="{{ qcal }}" onfocus="limparCampo(this)">
+         <br><br>
+         <textarea cols="60" rows="5" placeholder="Relatório" name="relatorio">{{ relatorio }}</textarea>
+         <br><br>
+        <button type="submit" class="btn btn-success">Salvar</button>
+     </center>
+     </form>
+  </div>
+</div>
+
+<script>
+function limparCampo(element) {
+    element.value = '';
+}
+</script>
+{% endblock %}

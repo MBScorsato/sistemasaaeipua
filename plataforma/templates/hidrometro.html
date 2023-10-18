@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+    <link rel="stylesheet" href="{% static 'plataforma/css/inputs.css' %}">
+
+{% endblock %}
+
+{% block titulo %}
+    Anotar Hidrômetro
+{% endblock %}
+
+{% block bv %}
+    <div class="bem-vindo">
+        <h1><b>{{ nome }}</b> - Anotar Hidrômetro</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+<br>
+                              <div class="message">{% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert {{message.tags}}">
+                                        <center>{{message}}</center>
+                                    </div>
+                                {% endfor %}
+                                {% endif %}</div>
+<div class="card">
+  <div class="card-body">
+     <form action="{% url 'hidrometro' %}" method="post">{% csrf_token %}
+     <center>
+         <label class="hidrometro_150">Hidrometro 150mm</label> <input type="text" name="hidrometro_150" placeholder="0" value="{{ hidrometro_150 }}" onfocus="limparCampo(this)">
+         <label class="hidrometro_200">Hidrometro 250mm</label> <input type="text" name="hidrometro_200" placeholder="0" value="{{ hidrometro_200 }}" onfocus="limparCampo(this)">
+         <label class="hidrometro_poco">Hidrometro poço</label> <input type="text" name="hidrometro_poco" placeholder="0" value="{{ hidrometro_poco }}" onfocus="limparCampo(this)">
+         <br><br>
+         <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio">{{ relatorio }}</textarea>
+         <br><br>
+        <button type="submit" class="btn btn-success">Salvar</button>
+     </center>
+     </form><br><br>
+  </div>
+</div>
+
+<script>
+function limparCampo(element) {
+    element.value = '';
+}
+</script>
+{% endblock %}

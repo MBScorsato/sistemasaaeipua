@@ -1,0 +1,47 @@
+Sistema para Análise de Qualidade de Água e Website:
+    O Sistema para Análise de Qualidade de Água é uma plataforma desenvolvida para monitorar e avaliar a qualidade da água em
+diferentes locais, como poços, rios, lagos e reservatórios. Seu objetivo é fornecer uma ferramenta eficaz e confiável para
+a coleta, análise e armazenamento de dados sobre a qualidade da água, ajudando empresas e instituições a monitorar e
+garantir que os padrões de qualidade estejam sendo atendidos.
+
+Principais Características do Sistema:
+    Coleta de Dados: O sistema permite a coleta de dados em campo através de dispositivos móveis ou sensores
+automatizados. Os técnicos ou operadores podem registrar informações importantes, como níveis de cloro, pH, cor, turbidez e
+outros parâmetros diretamente no sistema.
+Armazenamento Centralizado: Todas as informações coletadas são armazenadas de forma centralizada em um banco de dados seguro.
+Isso permite um acesso fácil e rápido aos dados, eliminando a necessidade de manter registros físicos e possibilitando
+uma análise detalhada a longo prazo.
+Análise e Geração de Relatórios:
+    O sistema é capaz de analisar os dados coletados e gerar relatórios detalhados sobre a
+qualidade da água em diferentes locais e períodos de tempo. Esses relatórios são valiosos para tomada de decisões e para
+atender a requisitos regulatórios.
+Acesso a Usuários Autorizados: O acesso ao sistema é controlado por meio de autenticação de usuário, garantindo que
+apenas pessoas autorizadas tenham acesso aos dados sensíveis da qualidade da água.
+Notificações e Alertas:
+    O sistema pode ser configurado para enviar notificações e alertas automáticos caso sejam
+detectadas alterações significativas na qualidade da água ou se ocorrerem eventos críticos que requeiram ações imediatas.
+Integração com Dispositivos: É possível integrar o sistema a dispositivos e sensores automáticos, permitindo uma coleta
+contínua e em tempo real dos dados de qualidade da água.
+
+Website e Comunicação com a Empresa:
+    Além do sistema de análise de qualidade de água, o website da empresa é uma parte essencial da plataforma. O site é
+projetado para ser a porta de entrada para clientes e usuários do sistema, oferecendo uma experiência amigável e informativa.
+Ao acessar o site, os usuários são recebidos com um aviso importante da parte administrativa da empresa, como anúncios,
+notícias ou informações essenciais relacionadas à qualidade da água. Em seguida, os usuários podem navegar pelo site usando
+os botões e menus da parte superior, que oferecem acesso fácil a diferentes seções e recursos.
+Um destaque especial é o botão "Falar com a Empresa", que permite que os usuários entrem em contato diretamente ou
+indiretamente com a empresa. Isso pode incluir um formulário de contato para envio de mensagens e perguntas, informações de
+contato para comunicação por telefone ou e-mail, ou até mesmo sua dúvida pode aparecer no  site ajudandoo outras pessoas.
+O website também pode fornecer informações adicionais sobre a empresa, seus serviços, equipes técnicas e projetos
+realizados, reforçando a credibilidade e a expertise da empresa na área de análise de qualidade da água.
+
+    Em resumo, o Sistema para Análise de Qualidade de Água é uma ferramenta abrangente para monitorar e avaliar a qualidade
+da água, enquanto o website complementa a plataforma, fornecendo informações importantes e uma forma de
+comunicação direta entre os usuários e a empresa. Essa integração cria uma solução completa e eficaz para
+atender às necessidades de análise e comunicação relacionadas à qualidade da água.
+
+O sistema foi criado em Python/Django como sua linguagem principal de back-end, tendo como front-end: HTML, CSS, BOOTSTRAP,
+JAVA SCRIPT
+
+O banco de dados esta sendo usado o SQLITE porém o sistema pode receber bancos como MySql, MariaDB e PostgreeSQL, decidi usar
+o SQLITE pelo baixo fluxo de dados

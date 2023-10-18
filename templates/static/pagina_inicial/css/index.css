@@ -1,0 +1,36 @@
+.img_logo {
+  text-align: center;
+  width: 90%;
+}
+.coluna1{
+    background-color: #ffffff;
+}
+.coluna2{
+      background-color: #f0f0f0;
+}
+.titulo-form{
+  color: blue;
+  text-align: center;
+  font-family: Verdana, Arial, sans-serif;
+}
+.div-form{
+    text-align: center;
+}
+.ola{
+    color: blue;
+    text-align: center;
+}
+.seu_nome_sigilo{
+    font-family: Verdana, Arial, sans-serif;
+    color: green;
+}
+.pergunta-card{
+    color: blue;
+}
+.resposta-card{
+    text-align: right;
+    color: red;
+}
+.card-text{
+    color: #4f4f4f;
+}

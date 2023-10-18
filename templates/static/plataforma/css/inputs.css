@@ -1,0 +1,9 @@
+/* Estilo para todos os inputs do tipo "number" */
+input[type="number"] {
+  width: 100px; /* Altere o valor conforme necessário */
+  font-size: 25px;
+}
+input[type="text"] {
+  width: 100px; /* Altere o valor conforme necessário */
+  font-size: 25px;
+}
