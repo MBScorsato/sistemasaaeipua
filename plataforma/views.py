@@ -7,13 +7,15 @@ from plataforma.models import Analise_Agua_tratada, Analise_Agua_bruta, Operador
     Cal_Quantidade, Hidrometro, SaidaCaminhaPipa, Mensagem
 
 
-# esta def é a principal, depois de logar cai nesta def
+# Def é a principal, depois de logar cai nesta def
 @login_required(login_url='operadores')
 def plataforma(request):
     if request.method == 'GET':
         nome = request.user
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -63,35 +65,32 @@ def plataforma(request):
                                                    })
 
 
+# Def que salva os dados da agua tratada
 @login_required(login_url='operadores')
 def agua_tratada(request):
     if request.method == 'GET':
         # Obtém o nome de usuário do usuário logado
         nome = request.user.username
 
-        nome = request.user
-
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
             print(esta_autorizado)
-        # Recupera o último valor salvo no modelo Cal_Quantidade
-        ultimo_registro = Cal_Quantidade.objects.last()
-
-        quantidade = ultimo_registro.quantidade if ultimo_registro else None
 
         return render(request, 'agua_tratada.html', {'nome': nome,
-                                                     'quantidade': quantidade,
-                                                     'esta_autorizado': esta_autorizado,})
+                                                     'esta_autorizado': esta_autorizado,
+
+                                                     })
 
     elif request.method == 'POST':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -155,18 +154,19 @@ def agua_tratada(request):
                                                      'turbidez': turbidez,
                                                      'cor': cor,
                                                      'relatorio': relatorio,
-
+                                                     'esta_autorizado': esta_autorizado,
                                                      })
 
 
+# Def que salva os dados da agua bruta
 @login_required(login_url='operadores')
 def agua_bruta(request):
     if request.method == 'GET':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -177,11 +177,11 @@ def agua_bruta(request):
                                                    })
 
     elif request.method == 'POST':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -293,19 +293,19 @@ def agua_bruta(request):
                                                        'qpac': qpac,
                                                        'qcal': qcal,
                                                        'relatorio': relatorio,
-
+                                                       'esta_autorizado': esta_autorizado,
                                                        })
 
 
+# Def que salva os dados do cal consumido
 @login_required(login_url='operadores')
 def adicao_de_cal(request):
     if request.method == 'GET':
+        nome = request.user
 
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
-
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -325,6 +325,8 @@ def adicao_de_cal(request):
         return render(request, 'adicao_de_cal.html', {'nome': nome,
                                                       'resultados_divididos': resultados_divididos,
                                                       'quilos_cal': quilos_cal,
+                                                      'esta_autorizado': esta_autorizado,
+
                                                       })
 
     elif request.method == 'POST':
@@ -379,14 +381,15 @@ def adicao_de_cal(request):
                                                   })
 
 
+# Def que salva a 'produção' de agua limpa
 @login_required(login_url='operadores')
 def hidrometro(request):
     if request.method == 'GET':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -394,7 +397,10 @@ def hidrometro(request):
 
         # buscar os ultimos dados salvos e reproduzir no bootstrap html
 
-        return render(request, 'hidrometro.html', {'nome': nome})
+        return render(request, 'hidrometro.html', {'nome': nome,
+                                                   'esta_autorizado': esta_autorizado,
+
+                                                   })
 
     elif request.method == 'POST':
         # Obtém o nome de usuário do usuário logado
@@ -468,20 +474,23 @@ def hidrometro(request):
                                                })
 
 
+# Def que salva a saida dos caminhoes que buscam água limpa
 @login_required(login_url='operadores')
 def saida_de_caminhao_pipa(request):
     if request.method == 'GET':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
             print(esta_autorizado)
 
-        return render(request, 'saida_de_caminhao_pipa.html', {'nome': nome})
+        return render(request, 'saida_de_caminhao_pipa.html', {'nome': nome,
+                                                               'esta_autorizado': esta_autorizado,
+                                                               })
 
     elif request.method == 'POST':
         # Obtém o nome de usuário do usuário logado
@@ -544,14 +553,15 @@ def saida_de_caminhao_pipa(request):
         return render(request, 'saida_de_caminhao_pipa.html', {'nome': nome})
 
 
+# Def que trabalha com as mensagens deixadas pelos operadores
 @login_required(login_url='operadores')
 def mensagem(request):
     if request.method == 'GET':
-        # Obtém o nome de usuário do usuário logado
-        nome = request.user.username
+        nome = request.user
 
-        if hasattr(nome, 'laboratorio'):
-            esta_autorizado = nome.laboratorio.autorizado
+        nome2 = request.user
+        if hasattr(nome2, 'laboratorio'):
+            esta_autorizado = nome2.laboratorio.autorizado
             print(esta_autorizado)
         else:
             esta_autorizado = False
@@ -565,6 +575,8 @@ def mensagem(request):
         return render(request, 'mensagem.html', {'nome': nome,
                                                  'buscar_msg': buscar_msg,
                                                  'data': data,
+                                                 'esta_autorizado': esta_autorizado,
+
                                                  })
     elif request.method == 'POST':
         # Obtém o nome de usuário do usuário logado

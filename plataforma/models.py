@@ -82,6 +82,7 @@ class Parametro(models.Model):
         return self.parametro
 
 
+# essas class salva qual operador ultilizoou cal
 class Cal_Quantidade(models.Model):
     quantidade = models.CharField(max_length=20)
     data = models.DateTimeField(default=timezone.now)
@@ -89,6 +90,7 @@ class Cal_Quantidade(models.Model):
     relatorio = models.TextField()
 
 
+# essa class salva o abastecimeto no estoque
 class Estoque_Cal(models.Model):
     cal_quilo = models.IntegerField()
     data = models.DateTimeField(default=timezone.now)
@@ -189,4 +191,3 @@ class Laboratorio(models.Model):
             return f"{self.operador} está autorizado para acessar a área de Laboratório"
         else:
             return f"{self.operador} não está autorizado para acessar a área de Laboratório"
-
