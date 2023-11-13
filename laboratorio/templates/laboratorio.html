@@ -20,7 +20,35 @@
         {{senha}}
       {% endfor %}
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+   <script type="text/javascript">
+      google.charts.load('current', {'packages':['gauge']});
+      google.charts.setOnLoadCallback(drawChart);
 
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['% PAC', 80],
+          ['% CLORO', 55],
+          ['% FLUOR', 68]
+        ]);
+
+        var options = {
+          width: 400, height: 120,
+          redFrom: 0, redTo: 7,
+          yellowFrom:7, yellowTo: 16,
+          minorTicks: 7
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+
+
+      }
+    </script>
   <nav class="navbar navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'plataforma' %}">Área dos Operadores</a>
@@ -78,81 +106,37 @@
 <br><br><br>
   <center><form method="post" action="{% url 'laboratorio' %}">{% csrf_token %}
     <h3>Médias das últimas
-      <input type="number" value="12" style="width: 53px;" name="numero_analises"> Análises <input type="submit" value="Ok"></h3>
+      <input type="number" placeholder="00" style="width: 53px;" name="numero_analises" min="1" value="0">
+       Análises <input type="submit" value="Ok"></h3>
     </form>
-  <div class="card" style="width: 900px;">
+  <div class="card" style="width: 975px;">
   <div class="card-body">
-    <b>Cloro: {{ media_cloro|floatformat:2 }}</b> |
+    | <b>Cloro: {{ media_cloro|floatformat:2 }}</b> |
     <b>Ph: {{ media_ph|floatformat:2 }}</b> |
     <b>Turbidez: {{ media_turbidez|floatformat:2 }}</b> |
     <b>Fluor: {{ media_fluor|floatformat:2 }}</b> |
-    <b>cal: 16 horas</b> |
-    <b>Dif. último horário cal: {{resultado}} horas</b> |
-
-
-  </div>
-  </div></center>
+    <b>Cal no estoque: {{ r_cal }} sacos</b> |
+    <b>Entre horas cal abastecimento: {{resultado}} horas</b> |
+  </div></div></center>
 <hr>
-<div class="container">
-    <div class="row">
-        <div class="col-4">
-
-           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawVisualization);
-
-      function drawVisualization() {
-        // Some raw data (not necessarily accurate)
-        var data = google.visualization.arrayToDataTable([
-          ['Análises', 'Cloro', 'Flúor', 'Turbidez'],
-          ['POÇO 1',  1.22,      0.93,         0.11],
-          ['POÇO 2',  1.23,      0.11,        0.15],
-          ['POÇO 3',  1.57,     0.11,        0.13],
-          ['POÇO 4',  1.39,      0.19,        0.14],
-          ['POÇO 5',  1.36,      0.18,         0.12],
-          ['POÇO 6',  1.22,      0.93,         0.11],
-          ['POÇO 7',  1.23,      0.11,        0.15],
-          ['POÇO 8',  1.57,     0.11,        0.13],
-          ['POÇO 9',  1.39,      0.19,        0.14],
-          ['POÇO 10',  1.36,      0.18,         0.12],
-        ]);
-
-        var options = {
-          title : 'Análises dos Poços',
-          vAxis: {title: ''},
-          hAxis: {title: ''},
-          seriesType: 'bars',
-          series: {3: {type: 'line'}}
-        };
-
-        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-    </script>
 
 
-
-
-
-
-
-
-
-
-
-        </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+      <!-- Conteúdo da primeira metade da página -->
+      <center><div id="chart_div" style="width: 400px; height: 170px;"></div></center>
     </div>
-          <div id="chart_div" style="width: 1090px; height: 180px;"></div>
-
+    <div class="col-md-6">
+      <!-- Conteúdo da segunda metade da página -->
+      <h2>Metade 2</h2>
+      <p>Este é o conteúdo da segunda metade da página.</p>
     </div>
-    <div class="row">
-        <div class="col-4">Divisão x<br>
-
-        <br></div>
-    </div>
+  </div>
 </div>
+
+
+
 
   <script>
         function mostrarTexto() {
@@ -160,10 +144,17 @@
             alert("Texto digitado: " + texto);
         }
     </script>
-  >>> {{ dado_formulario }}
+  >>> {{ n_analise }}
     {% endblock %}
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
   <br><br><br><br><br><br><br></body>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 </html>

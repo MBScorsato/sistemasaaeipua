@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'operadores',
     'plataforma',
     'laboratorio',
+    'analises_basica_interna',
 
 ]
 

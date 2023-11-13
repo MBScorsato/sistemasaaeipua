@@ -9,7 +9,7 @@ class Senha(models.Model):
 
 
 class Numero_Media(models.Model):
-    n = models.IntegerField(default=12)
+    n = models.IntegerField()
 
     def __str__(self):
-        return self.n
+        return str(self.n)
