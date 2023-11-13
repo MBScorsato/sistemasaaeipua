@@ -103,3 +103,11 @@ def laboratorio(request):
         response = HttpResponse(render(request, 'laboratorio.html', {'resultado': resultado}))
         response['refresh'] = '1;url=' + request.META.get('HTTP_REFERER', '/')
         return response
+
+
+def analises_basica_interna(request):
+    if request.method == 'GET':
+        return render(request, 'analises_basica_interna.html')
+
+    if request.method == 'POST':
+        return render(request, 'analises_basica_interna.html')
