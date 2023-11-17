@@ -20,40 +20,8 @@
         {{senha}}
       {% endfor %}
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-   <script type="text/javascript">
-      google.charts.load('current', {'packages':['gauge']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['% PAC', 80],
-          ['% CLORO', 55],
-          ['% FLUOR', 68],
-          ['% DPD', 91],
-          ['% SPADZ', 51],
-          ['% PAPEL H.', 12],
-          ['% MEIO DE CULT.', 25],
-          ['% RECIP. CULT', 91],
-        ]);
-
-        var options = {
-          width: 1100, height: 190,
-          redFrom: 0, redTo: 7,
-          yellowFrom:7, yellowTo: 16,
-          minorTicks: 7
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
 
 
-
-      }
-    </script>
   <nav class="navbar navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'plataforma' %}">Área dos Operadores</a>
@@ -121,26 +89,9 @@
     <b>Turbidez: {{ media_turbidez|floatformat:2 }}</b> |
     <b>Fluor: {{ media_fluor|floatformat:2 }}</b> |
     <b>Cal no estoque: {{ r_cal }} sacos</b> |
-    <b>Entre horas cal abastecimento: {{resultado}} horas</b> |
+    <b>Durabilidade do último cal: {{resultado}} horas</b> |
   </div></div></center>
-  <br>
 
-
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-6">
-      <!-- Conteúdo da primeira metade da página -->
-      <center><div id="chart_div" style="width: 400px; height: 170px;"></div></center>
-
-<div>
-    </div>
-
-    <div class="col-md-6">
-      <!-- Conteúdo da segunda metade da página -->
-
-    </div>
-  </div>
-</div>
 
   <script>
         function mostrarTexto() {
@@ -149,11 +100,216 @@
         }
     </script>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart_cloro);
+
+    function drawChart_cloro() {
+        var valorG1Cloro = parseFloat('{{ valor_g1_cloro|safe }}');
+        var valorG2Cloro = parseFloat('{{ valor_g2_cloro|safe }}');
+        var valorG3Cloro = parseFloat('{{ valor_g3_cloro|safe }}');
+
+        var valorG1HorasCloro = '{{ horasC1|safe }}'
+        var valorG2HorasCloro = '{{ horasC2|safe }}'
+        var valorG3HorasCloro = '{{ horasC3|safe }}'
+
+        var data = google.visualization.arrayToDataTable([
+            ['Horas', 'Cloro'],
+            [valorG3HorasCloro,  valorG3Cloro],
+            [valorG2HorasCloro,  valorG2Cloro],
+            [valorG1HorasCloro,  valorG1Cloro]
+            // Adicione mais linhas conforme necessário para mais valores
+        ]);
+
+        var options = {
+            title: 'Cloro',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart_cloro'));
+
+        chart.draw(data, options);
+    }
+</script>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart_fluor);
+
+function drawChart_fluor() {
+
+        var valorG1Fluor = parseFloat('{{ valor_g1_fluor|safe }}');
+        var valorG2Fluor = parseFloat('{{ valor_g2_fluor|safe }}');
+        var valorG3Fluor = parseFloat('{{ valor_g3_fluor|safe }}');
+
+        var valorG1HorasFluor = '{{ horasF1|safe }}'
+        var valorG2HorasFluor = '{{ horasF2|safe }}'
+        var valorG3HorasFluor = '{{ horasF3|safe }}'
+
+  var data = google.visualization.arrayToDataTable([
+    ['Horas', 'Fluor'],
+    [valorG3HorasFluor,   valorG3Fluor],
+    [valorG2HorasFluor,  valorG2Fluor],
+    [valorG1HorasFluor, valorG1Fluor],
+  ]);
+
+  var options = {
+    title: 'Fluor',
+    curveType: 'function',
+    legend: { position: 'bottom' },
+    colors: ['red'] // Definindo a cor vermelha para a linha do gráfico
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('curve_chart_fluor'));
+
+  chart.draw(data, options);
+}
+</script>
+
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart_turbidez);
+
+function drawChart_turbidez() {
+
+
+       var valorG1Turbidez = parseFloat('{{ valor_g1_turbidez|safe }}');
+       var valorG2Turbidez = parseFloat('{{ valor_g2_turbidez|safe }}');
+       var valorG3Turbidez = parseFloat('{{ valor_g3_turbidez|safe }}');
+
+       var valorG1HorasTurbidez = '{{ horasT1|safe }}'
+       var valorG2HorasTurbidez = '{{ horasT2|safe }}'
+       var valorG3HorasTurbidez = '{{ horasT3|safe }}'
+
+  var data = google.visualization.arrayToDataTable([
+    ['Horas', 'Turbidez'],
+    [valorG3HorasTurbidez,  valorG3Turbidez],
+    [valorG2HorasTurbidez,  valorG2Turbidez],
+    [valorG1HorasTurbidez, valorG1Turbidez],
+  ]);
+
+  var options = {
+    title: 'Turbidez',
+    curveType: 'function',
+    legend: { position: 'bottom' },
+    colors: ['orange'] // Definindo a cor vermelha para a linha do gráfico
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('curve_chart_turbidez'));
+
+  chart.draw(data, options);
+}
+</script>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart_cor);
+
+function drawChart_cor() {
+        var valorG1Cor = parseFloat('{{ valor_g1_cor|safe }}');
+        var valorG2Cor = parseFloat('{{ valor_g2_cor|safe }}');
+        var valorG3Cor = parseFloat('{{ valor_g3_cor|safe }}');
+
+       var valorG1HorasTurbidez = '{{ horasCOR1|safe }}'
+       var valorG2HorasTurbidez = '{{ horasCOR2|safe }}'
+       var valorG3HorasTurbidez = '{{ horasCOR3|safe }}'
+
+  var data = google.visualization.arrayToDataTable([
+    ['Horas', 'Cor'],
+    [valorG3HorasTurbidez,  valorG3Cor],
+    [valorG2HorasTurbidez,  valorG2Cor],
+    [valorG1HorasTurbidez, valorG1Cor],
+  ]);
+
+  var options = {
+    title: 'Cor',
+    curveType: 'function',
+    legend: { position: 'bottom' },
+    colors: ['green'] // Definindo a cor vermelha para a linha do gráfico
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('curve_chart_cor'));
+
+  chart.draw(data, options);
+}
+</script>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart_ph);
+
+function drawChart_ph() {
+
+        var valorG1Ph = parseFloat('{{ valor_g1_ph|safe }}');
+        var valorG2Ph = parseFloat('{{ valor_g2_ph|safe }}');
+        var valorG3Ph = parseFloat('{{ valor_g3_ph|safe }}');
+
+        var valorG1HorasPh = '{{ horasP1|safe }}'
+        var valorG2HorasPh = '{{ horasP2|safe }}'
+        var valorG3HorasPh = '{{ horasP3|safe }}'
+
+  var data = google.visualization.arrayToDataTable([
+    ['Horas', 'pH'],
+    [valorG3HorasPh,  valorG3Ph],
+    [valorG2HorasPh,  valorG2Ph],
+    [valorG1HorasPh, valorG1Ph],
+  ]);
+
+  var options = {
+    title: 'pH',
+    curveType: 'function',
+    legend: { position: 'bottom' },
+    colors: ['brown'] // Definindo a cor vermelha para a linha do gráfico
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('curve_chart_ph'));
+
+  chart.draw(data, options);
+}
+
+    </script>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      <!-- Conteúdo da primeira parte -->
+   <div id="curve_chart_cloro" style="width: 230px; height: 440px"></div>
+    </div>
+    <div class="col-sm-2">
+      <!-- Conteúdo da segunda parte -->
+      <div id="curve_chart_fluor" style="width: 230px; height: 440px"></div>
+    </div>
+    <div class="col-sm-2">
+      <!-- Conteúdo da terceira parte -->
+      <div id="curve_chart_ph" style="width: 230px; height: 440px"></div>
+    </div>
+    <div class="col-sm-2">
+      <!-- Conteúdo da quarta parte -->
+      <div id="curve_chart_turbidez" style="width: 230px; height: 440px"></div>
+    </div>
+    <div class="col-sm-2">
+      <!-- Conteúdo da quinta parte -->
+      <div id="curve_chart_cor" style="width: 230px; height: 440px"></div>
+    </div>
+  </div>
+</div>
+
     {% endblock %}
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-  <br><br><br><br><br><br><br></div></body>
+  </div></body>
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

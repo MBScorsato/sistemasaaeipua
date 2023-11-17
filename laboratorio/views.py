@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
 from django.http import HttpResponse
 from django.shortcuts import render
-
-from laboratorio.models import Numero_Media
-from plataforma.models import Laboratorio, Parametro, Analise_Agua_tratada, Cal_Quantidade, Estoque_Cal, \
-    Tabela_estoque_cal
+from laboratorio.models import Numero_Media, Fluor_diario
+from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
+from django.utils import timezone
 
 
 def calcular_diferenca_em_horas():
@@ -64,7 +62,12 @@ def laboratorio(request):
         else:
             media_ph = 0.00
 
-        media_fluor = valor_n
+        ultimas_analises_fluor = Fluor_diario.objects.order_by('-id')[:valor_n].values_list('fluor', flat=True)
+        valores_fluor = list(ultimas_analises_fluor)
+        if valores_fluor:
+            media_fluor = sum(valores_fluor) / len(valores_fluor)
+        else:
+            media_fluor = 0.00
 
         # buscar quantidades de sacos de cal no estoque
         quantidade_cal_estoque = Tabela_estoque_cal.objects.first().resultado_final
@@ -72,13 +75,132 @@ def laboratorio(request):
 
         print("Sacos de cal no estoque:", r_cal)
 
+        # Análises para os gráficos daqui para baixo
+        #
+        #
+
+        # cloro
+        grafico_cloro = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('cloro', flat=True)
+        datas = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('data_analise_agua', flat=True)
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas_cloro = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas cloro
+        horasC1 = horas_cloro[0]
+        horasC2 = horas_cloro[1]
+        horasC3 = horas_cloro[2]
+
+        # valor cloro
+        valor_g1_cloro = grafico_cloro[0]
+        valor_g2_cloro = grafico_cloro[1]
+        valor_g3_cloro = grafico_cloro[2]
+
+        # fluor
+        grafico_fluor = Fluor_diario.objects.order_by('-id')[:3].values_list('fluor', flat=True)
+        datas = Fluor_diario.objects.order_by('-id')[:3].values_list('data', flat=True)
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas_fluor = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas fluor
+        horasF1 = horas_fluor[0]
+        horasF2 = horas_fluor[1]
+        horasF3 = horas_fluor[2]
+
+        # valor fluor
+        valor_g1_fluor = grafico_fluor[0]
+        valor_g2_fluor = grafico_fluor[1]
+        valor_g3_fluor = grafico_fluor[2]
+
+        # ph
+        grafico_ph = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('ph', flat=True)
+        datas = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('data_analise_agua', flat=True)
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas pH
+        horasP1 = horas[0]
+        horasP2 = horas[1]
+        horasP3 = horas[2]
+
+        # valor ph
+        valor_g1_ph = grafico_ph[0]
+        valor_g2_ph = grafico_ph[1]
+        valor_g3_ph = grafico_ph[2]
+
+        # turbidez
+        grafico_turbidez = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('turbidez', flat=True)
+
+        datas = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('data_analise_agua', flat=True)
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas_turbudez = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas turbidez
+        horasT1 = horas_turbudez[0]
+        horasT2 = horas_turbudez[1]
+        horasT3 = horas_turbudez[2]
+
+        # valor turbidez
+        valor_g1_turbidez = grafico_turbidez[0]
+        valor_g2_turbidez = grafico_turbidez[1]
+        valor_g3_turbidez = grafico_turbidez[2]
+
+        # # cor
+        grafico_cor = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('cor', flat=True)
+
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas_cor = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas cor
+        horasCOR1 = horas_cor[0]
+        horasCOR2 = horas_cor[1]
+        horasCOR3 = horas_cor[2]
+
+        valor_g1_cor = grafico_cor[0]
+        valor_g2_cor = grafico_cor[1]
+        valor_g3_cor = grafico_cor[2]
+
         return render(request, 'laboratorio.html', {'media_cloro': media_cloro,
                                                     'media_turbidez': media_turbidez,
                                                     'media_ph': media_ph,
                                                     'media_fluor': media_fluor,
                                                     'resultado': resultado,
                                                     'r_cal': r_cal,
-
+                                                    'media_fluor': media_fluor,
+                                                    'valor_g1_cloro': valor_g1_cloro,
+                                                    'valor_g2_cloro': valor_g2_cloro,
+                                                    'valor_g3_cloro': valor_g3_cloro,
+                                                    'valor_g1_fluor': valor_g1_fluor,
+                                                    'valor_g2_fluor': valor_g2_fluor,
+                                                    'valor_g3_fluor': valor_g3_fluor,
+                                                    'valor_g1_ph': valor_g1_ph,
+                                                    'valor_g2_ph': valor_g2_ph,
+                                                    'valor_g3_ph': valor_g3_ph,
+                                                    'valor_g1_turbidez': valor_g1_turbidez,
+                                                    'valor_g2_turbidez': valor_g2_turbidez,
+                                                    'valor_g3_turbidez': valor_g3_turbidez,
+                                                    'valor_g1_cor': valor_g1_cor,
+                                                    'valor_g2_cor': valor_g2_cor,
+                                                    'valor_g3_cor': valor_g3_cor,
+                                                    'horasC1': horasC1,  # horas cloro
+                                                    'horasC2': horasC2,
+                                                    'horasC3': horasC3,
+                                                    'horasP1': horasP1,  # horas ph
+                                                    'horasP2': horasP2,
+                                                    'horasP3': horasP3,
+                                                    'horasF1': horasF1,  # horas fluor
+                                                    'horasF2': horasF2,
+                                                    'horasF3': horasF3,
+                                                    'horasT1': horasT1,  # horas turbidez
+                                                    'horasT2': horasT2,
+                                                    'horasT3': horasT3,
+                                                    'horasCOR1': horasCOR1,  # horas cor
+                                                    'horasCOR2': horasCOR2,
+                                                    'horasCOR3': horasCOR3,
                                                     })
     elif request.method == 'POST':
         ultimo_registro = Numero_Media.objects.all()
@@ -111,3 +233,10 @@ def analises_basica_interna(request):
 
     if request.method == 'POST':
         return render(request, 'analises_basica_interna.html')
+
+
+def fluor(request):
+    if request.method == 'GET':
+        return render(request, 'fluor.html')
+    if request.method == 'POST':
+        return render(request, 'fluor.html')

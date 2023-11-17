@@ -21,3 +21,12 @@ class Aviso(models.Model):
 
     def __str__(self):
         return self.titulo
+
+
+class Contato(models.Model):
+    cidade_estado = models.CharField(max_length=100)
+    telefone = models.CharField(max_length=20)
+    email = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Cidade e contato da estação - ETA"

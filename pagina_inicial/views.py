@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from pagina_inicial.models import Reclame, Aviso
+from pagina_inicial.models import Reclame, Aviso, Contato
 from django.contrib import messages
 from django.contrib.messages import constants
 
@@ -13,7 +13,19 @@ def index(request):
         postagem = Aviso.objects.all()
 
         publicar_reclame = Reclame.objects.filter(boolean=True).order_by('-id')[:10]
-        return render(request, 'index.html', {'postagem': postagem, 'publicar_reclame': publicar_reclame})
+
+        objeto = Contato.objects.all().order_by('-id')[:1]
+        for item in objeto:
+            tel = item.telefone
+            cidade_estado = item.cidade_estado
+            email = item.email
+        return render(request, 'index.html', {'postagem': postagem,
+                                              'publicar_reclame': publicar_reclame,
+                                              'tel': tel,
+                                              'cidade_estado': cidade_estado,
+                                              'email': email,
+
+                                              })
     elif request.method == 'POST':
         mensagem = request.POST.get('mensagem').strip()
         nome = request.POST.get('nome').strip()
