@@ -1,3 +1,7 @@
+import datetime
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.messages import constants
 from django.http import HttpResponse
 from django.shortcuts import render
 from laboratorio.models import Numero_Media, Fluor_diario
@@ -5,6 +9,7 @@ from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoq
 from django.utils import timezone
 
 
+@login_required(login_url='operadores')
 def calcular_diferenca_em_horas():
     # Consulta para obter as datas (horas)
     cal = Cal_Quantidade.objects.order_by('-id')[:2].values_list('data', flat=True)
@@ -22,6 +27,7 @@ def calcular_diferenca_em_horas():
         return 0
 
 
+@login_required(login_url='operadores')
 def laboratorio(request):
     if request.method == 'GET':
         usuario = request.user
@@ -203,6 +209,8 @@ def laboratorio(request):
                                                     'horasCOR3': horasCOR3,
                                                     })
     elif request.method == 'POST':
+
+        # quantidade de analises para calculo de média
         ultimo_registro = Numero_Media.objects.all()
         if not ultimo_registro:
             len(ultimo_registro) <= 0
@@ -216,17 +224,23 @@ def laboratorio(request):
         try:
             salvar_n = Numero_Media(n=n)
             ultimo_registro = Numero_Media.objects.latest('n')
+
+            # apague o registro
             ultimo_registro.delete()
 
+            # e salve um novo, ao estilo CRUD
             salvar_n.save()
         except Exception as e:
             pass
+
+        # forçar um F5 na página
         resultado = calcular_diferenca_em_horas()
         response = HttpResponse(render(request, 'laboratorio.html', {'resultado': resultado}))
         response['refresh'] = '1;url=' + request.META.get('HTTP_REFERER', '/')
         return response
 
 
+@login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
         return render(request, 'analises_basica_interna.html')
@@ -235,8 +249,34 @@ def analises_basica_interna(request):
         return render(request, 'analises_basica_interna.html')
 
 
+@login_required(login_url='operadores')
 def fluor(request):
     if request.method == 'GET':
         return render(request, 'fluor.html')
+
     if request.method == 'POST':
+        # Obtém o nome de usuário do usuário logado
+        nome = request.user
+
+        fluor = request.POST.get('analise_fluor')
+        relatorio = request.POST.get('relatorio')
+
+        if relatorio == '':
+            relatorio = 'Nada consta'
+        # Verifica se todos os campos do formulário foram preenchidos
+        if not all([fluor]) or fluor == '':
+            messages.error(request, 'O campo FLÚOR é obrigatório preecher')
+            return render(request, 'fluor.html')
+
+        try:
+            salvar_fluor = Fluor_diario(usuario=nome, fluor=fluor, data=datetime.datetime.now(), relatorio=relatorio)
+            salvar_fluor.save()
+            messages.add_message(request, constants.SUCCESS, 'Flúor salvo com sucesso')
+        except Exception as e:
+            print("Erro ao salvar:", e)  # Isso imprimirá informações sobre o erro no console do servidor
+            messages.warning(request, 'Erro interno do sistema. Tente novamente.')
+            messages.warning(request, 'Certifique-se de estar usando ponto em vez de vírgula, ex: "7.23" está '
+                                      'correto')
+            messages.warning(request, 'Neste campo você deve preecher com números!')
+
         return render(request, 'fluor.html')

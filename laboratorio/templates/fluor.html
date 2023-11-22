@@ -11,21 +11,30 @@
 </center>
 {% endblock %}
 
-{% block input %}<br><br><br>
+{% block input %}<br><br>
     <div class="tabela">
-        <div class="card">
-            <center>
+        <center>
             <div class="card-body">
-                <form>
-                    <h4>Flúor:</h4> <div class="input-div">
-                    <input type="number" name="analise_fluor" size="2" placeholder="00">
+
+        <div class="message">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            <center>{{message}}</center>
+        </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+                <form method="post" action="{% url 'fluor' %}">{% csrf_token %}
+                    <h4>Flúor:</h4>
+                    <input type="number" step="any" name="analise_fluor" placeholder="0.00"><br><br>
+                    <textarea cols="60" rows="5" placeholder="Relatório" name="relatorio"></textarea><br><br>
                     <input type="submit" value="Salvar" name="btn-form">
-            </div>
                 </form>
             </div>
-            </center>
-        </div>
+        </center>
     </div>
+
 {% endblock %}
 
 
