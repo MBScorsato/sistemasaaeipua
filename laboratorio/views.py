@@ -1,6 +1,5 @@
 import datetime
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -9,7 +8,7 @@ from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoq
 from django.utils import timezone
 
 
-@login_required(login_url='operadores')
+
 def calcular_diferenca_em_horas():
     # Consulta para obter as datas (horas)
     cal = Cal_Quantidade.objects.order_by('-id')[:2].values_list('data', flat=True)
@@ -27,7 +26,6 @@ def calcular_diferenca_em_horas():
         return 0
 
 
-@login_required(login_url='operadores')
 def laboratorio(request):
     if request.method == 'GET':
         usuario = request.user
@@ -240,7 +238,6 @@ def laboratorio(request):
         return response
 
 
-@login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
         return render(request, 'analises_basica_interna.html')
@@ -249,7 +246,6 @@ def analises_basica_interna(request):
         return render(request, 'analises_basica_interna.html')
 
 
-@login_required(login_url='operadores')
 def fluor(request):
     if request.method == 'GET':
         return render(request, 'fluor.html')
