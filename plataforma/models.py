@@ -9,6 +9,7 @@ class Analise_Agua_tratada(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # Campo para relacionar com o usuário
     cloro = models.FloatField()
     ph = models.FloatField()
+    fluor = models.FloatField()
     cor = models.FloatField()
     turbidez = models.FloatField()
     relatorio = models.TextField()

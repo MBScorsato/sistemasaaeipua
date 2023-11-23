@@ -98,12 +98,16 @@ def agua_tratada(request):
 
         cloro = request.POST.get('cloro')
         ph = request.POST.get('ph')
+        fluor = request.POST.get('fluor')
         cor = request.POST.get('cor')
         turbidez = request.POST.get('turbidez')
-        relatorio = request.POST.get('relatorio', 'Nada consta')  # Usando valor padrão se 'relatorio' estiver vazio
+        relatorio = request.POST.get('relatorio')
+
+        if relatorio == '':
+            relatorio = 'Nada consta'
 
         # Verifica se todos os campos do formulário foram preenchidos
-        if not all([cloro, ph, cor, turbidez]):
+        if not all([cloro, ph, cor, turbidez, fluor]):
             messages.error(request, 'Preencha todas as informações corretamente')
             return render(request, 'agua_tratada.html', {'nome': nome})
 
@@ -113,6 +117,7 @@ def agua_tratada(request):
                 cloro=float(cloro),
                 ph=float(ph),
                 cor=float(cor),
+                fluor=float(fluor),
                 turbidez=float(turbidez),
                 relatorio=relatorio,
                 data_analise_agua=datetime.datetime.now(),
@@ -127,6 +132,7 @@ def agua_tratada(request):
             cor = ''
             turbidez = ''
             relatorio = ''
+            fluor = ''
 
         except Exception as e:
             # Função para verificar se uma string é um número
@@ -142,6 +148,7 @@ def agua_tratada(request):
             cor = 'ERRO' if not is_number(cor) else cor
             turbidez = 'ERRO' if not is_number(turbidez) else turbidez
             cloro = 'ERRO' if not is_number(cloro) else cloro
+            fluor = 'ERRO' if not is_number(fluor) else fluor
 
             # Vamos imprimir o erro no console para depuração
             print("Erro ao salvar a análise:", e)
@@ -155,6 +162,7 @@ def agua_tratada(request):
                                                      'cor': cor,
                                                      'relatorio': relatorio,
                                                      'esta_autorizado': esta_autorizado,
+                                                     'fluor': fluor,
                                                      })
 
 

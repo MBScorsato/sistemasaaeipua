@@ -1,0 +1,33 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title%}Controle operacional{% endblock %}
+{% block body %}
+    <center>
+    <div class="card">
+        <div class="card-body">
+            <h1><b>Controle operacioal</b></h1>
+    </div>
+    </div>
+    </center>
+{% endblock %}
+{% block input %}<br><br>
+        <div class="message">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            <center>{{message}}</center>
+        </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+               <center> <form method="post" action="{% url 'controle_operacional' %}">{% csrf_token %}
+                   <b> PRÉ-Cloro:</b>
+                    <input type="number" step="any" name="pre_cloro" placeholder="0.00">
+                    <b> Cloro Estação:</b>
+                    <input type="number" step="any" name="cloro_estacao" placeholder="0.00">
+                    <b> Turbidez estação:</b>
+                    <input type="number" step="any" name="turbidez_estacao" placeholder="0.00"><br><br>
+                    <textarea cols="60" rows="5" placeholder="Relatório" name="relatorio"></textarea><br><br>
+                    <input type="submit" value="Salvar" name="btn-form">
+               </form></center>
+{% endblock %}

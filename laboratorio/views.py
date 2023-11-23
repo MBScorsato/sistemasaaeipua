@@ -1,15 +1,13 @@
 import datetime
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from django.shortcuts import render
-from laboratorio.models import Numero_Media, Fluor_diario
+from laboratorio.models import Numero_Media, Controle_Operacional
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
 
 
-@login_required(login_url='operadores')
 def calcular_diferenca_em_horas():
     # Consulta para obter as datas (horas)
     cal = Cal_Quantidade.objects.order_by('-id')[:2].values_list('data', flat=True)
@@ -27,7 +25,6 @@ def calcular_diferenca_em_horas():
         return 0
 
 
-@login_required(login_url='operadores')
 def laboratorio(request):
     if request.method == 'GET':
         usuario = request.user
@@ -68,7 +65,7 @@ def laboratorio(request):
         else:
             media_ph = 0.00
 
-        ultimas_analises_fluor = Fluor_diario.objects.order_by('-id')[:valor_n].values_list('fluor', flat=True)
+        ultimas_analises_fluor = Analise_Agua_tratada.objects.order_by('-id')[:valor_n].values_list('fluor', flat=True)
         valores_fluor = list(ultimas_analises_fluor)
         if valores_fluor:
             media_fluor = sum(valores_fluor) / len(valores_fluor)
@@ -102,23 +99,6 @@ def laboratorio(request):
         valor_g2_cloro = grafico_cloro[1]
         valor_g3_cloro = grafico_cloro[2]
 
-        # fluor
-        grafico_fluor = Fluor_diario.objects.order_by('-id')[:3].values_list('fluor', flat=True)
-        datas = Fluor_diario.objects.order_by('-id')[:3].values_list('data', flat=True)
-        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
-        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
-        horas_fluor = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
-
-        # horas fluor
-        horasF1 = horas_fluor[0]
-        horasF2 = horas_fluor[1]
-        horasF3 = horas_fluor[2]
-
-        # valor fluor
-        valor_g1_fluor = grafico_fluor[0]
-        valor_g2_fluor = grafico_fluor[1]
-        valor_g3_fluor = grafico_fluor[2]
-
         # ph
         grafico_ph = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('ph', flat=True)
         datas = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('data_analise_agua', flat=True)
@@ -135,6 +115,23 @@ def laboratorio(request):
         valor_g1_ph = grafico_ph[0]
         valor_g2_ph = grafico_ph[1]
         valor_g3_ph = grafico_ph[2]
+
+        # flúor
+        grafico_fluor = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('fluor', flat=True)
+        datas = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('data_analise_agua', flat=True)
+        # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
+        datas_no_fuso_horario = [data.astimezone(timezone.get_current_timezone()) for data in datas]
+        horas = [data.strftime('%H:%M') for data in datas_no_fuso_horario]
+
+        # horas flúor
+        horasF1 = horas[0]
+        horasF2 = horas[1]
+        horasF3 = horas[2]
+
+        # valor flúor
+        valor_g1_fluor = grafico_fluor[0]
+        valor_g2_fluor = grafico_fluor[1]
+        valor_g3_fluor = grafico_fluor[2]
 
         # turbidez
         grafico_turbidez = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('turbidez', flat=True)
@@ -154,7 +151,7 @@ def laboratorio(request):
         valor_g2_turbidez = grafico_turbidez[1]
         valor_g3_turbidez = grafico_turbidez[2]
 
-        # # cor
+        # cor
         grafico_cor = Analise_Agua_tratada.objects.order_by('-id')[:3].values_list('cor', flat=True)
 
         # Convertendo para o fuso horário desejado (substitua 'fuso_horario_desejado' pelo seu fuso horário)
@@ -176,17 +173,16 @@ def laboratorio(request):
                                                     'media_fluor': media_fluor,
                                                     'resultado': resultado,
                                                     'r_cal': r_cal,
-                                                    'media_fluor': media_fluor,
-                                                    'valor_g1_cloro': valor_g1_cloro,
+                                                    'valor_g1_cloro': valor_g1_cloro,  # valor cloro
                                                     'valor_g2_cloro': valor_g2_cloro,
                                                     'valor_g3_cloro': valor_g3_cloro,
-                                                    'valor_g1_fluor': valor_g1_fluor,
-                                                    'valor_g2_fluor': valor_g2_fluor,
-                                                    'valor_g3_fluor': valor_g3_fluor,
-                                                    'valor_g1_ph': valor_g1_ph,
+                                                    'valor_g1_ph': valor_g1_ph,  # valor pH
                                                     'valor_g2_ph': valor_g2_ph,
                                                     'valor_g3_ph': valor_g3_ph,
-                                                    'valor_g1_turbidez': valor_g1_turbidez,
+                                                    'valor_g1_fluor': valor_g1_fluor,  # valor flúor
+                                                    'valor_g2_fluor': valor_g2_fluor,
+                                                    'valor_g3_fluor': valor_g3_fluor,
+                                                    'valor_g1_turbidez': valor_g1_turbidez,  # valor turbdez
                                                     'valor_g2_turbidez': valor_g2_turbidez,
                                                     'valor_g3_turbidez': valor_g3_turbidez,
                                                     'valor_g1_cor': valor_g1_cor,
@@ -198,7 +194,7 @@ def laboratorio(request):
                                                     'horasP1': horasP1,  # horas ph
                                                     'horasP2': horasP2,
                                                     'horasP3': horasP3,
-                                                    'horasF1': horasF1,  # horas fluor
+                                                    'horasF1': horasF1,  # horas flúor
                                                     'horasF2': horasF2,
                                                     'horasF3': horasF3,
                                                     'horasT1': horasT1,  # horas turbidez
@@ -207,6 +203,10 @@ def laboratorio(request):
                                                     'horasCOR1': horasCOR1,  # horas cor
                                                     'horasCOR2': horasCOR2,
                                                     'horasCOR3': horasCOR3,
+                                                    'horasF1': horasF1,  # horas cor
+                                                    'horasF2': horasF2,
+                                                    'horasF3': horasF3,
+
                                                     })
     elif request.method == 'POST':
 
@@ -240,7 +240,6 @@ def laboratorio(request):
         return response
 
 
-@login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
         return render(request, 'analises_basica_interna.html')
@@ -249,34 +248,39 @@ def analises_basica_interna(request):
         return render(request, 'analises_basica_interna.html')
 
 
-@login_required(login_url='operadores')
-def fluor(request):
+def controle_operacional(request):
     if request.method == 'GET':
-        return render(request, 'fluor.html')
+        return render(request, 'controle_operacional.html')
 
     if request.method == 'POST':
         # Obtém o nome de usuário do usuário logado
         nome = request.user
 
-        fluor = request.POST.get('analise_fluor')
+        pre_cloro = request.POST.get('pre_cloro')
+        cloro_estacao = request.POST.get('cloro_estacao')
+        turbidez_estacao = request.POST.get('turbidez_estacao')
         relatorio = request.POST.get('relatorio')
 
         if relatorio == '':
             relatorio = 'Nada consta'
-        # Verifica se todos os campos do formulário foram preenchidos
-        if not all([fluor]) or fluor == '':
-            messages.error(request, 'O campo FLÚOR é obrigatório preecher')
-            return render(request, 'fluor.html')
 
         try:
-            salvar_fluor = Fluor_diario(usuario=nome, fluor=fluor, data=datetime.datetime.now(), relatorio=relatorio)
-            salvar_fluor.save()
-            messages.add_message(request, constants.SUCCESS, 'Flúor salvo com sucesso')
+            salvar_dados = Controle_Operacional(usuario=nome,
+                                                data=datetime.datetime.now(),
+                                                pre_cloro=pre_cloro,
+                                                cloro_esstacao=cloro_estacao,
+                                                turbidez_estacao=turbidez_estacao,
+                                                relatorio=relatorio,
+
+                                                )
+            salvar_dados.save()
+            messages.add_message(request, constants.SUCCESS, 'Dados salvo com sucesso')
+
         except Exception as e:
+
             print("Erro ao salvar:", e)  # Isso imprimirá informações sobre o erro no console do servidor
-            messages.warning(request, 'Erro interno do sistema. Tente novamente.')
+            messages.warning(request, 'Provável erro no sistema, tente outra vez!')
             messages.warning(request, 'Certifique-se de estar usando ponto em vez de vírgula, ex: "7.23" está '
                                       'correto')
-            messages.warning(request, 'Neste campo você deve preecher com números!')
 
-        return render(request, 'fluor.html')
+        return render(request, 'controle_operacional.html')

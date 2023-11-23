@@ -5,7 +5,7 @@ from .models import Analise_Agua_tratada, Analise_Agua_bruta, Parametro, Cal_Qua
 
 
 class Analise_Agua_tratadaAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'cloro', 'ph', 'cor', 'turbidez', 'data_analise_agua', 'relatorio')
+    list_display = ('usuario', 'cloro', 'ph', 'fluor', 'cor', 'turbidez', 'data_analise_agua', 'relatorio')
 
     def changelist_view(self, request, extra_context=None):
         activate('America/Sao_Paulo')
