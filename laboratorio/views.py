@@ -1,11 +1,13 @@
+import cmath
 import datetime
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from django.shortcuts import render
-from laboratorio.models import Numero_Media, Controle_Operacional
+from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
+from django.shortcuts import render, get_object_or_404
 
 
 def calcular_diferenca_em_horas():
@@ -185,7 +187,7 @@ def laboratorio(request):
                                                     'valor_g1_turbidez': valor_g1_turbidez,  # valor turbdez
                                                     'valor_g2_turbidez': valor_g2_turbidez,
                                                     'valor_g3_turbidez': valor_g3_turbidez,
-                                                    'valor_g1_cor': valor_g1_cor,
+                                                    'valor_g1_cor': valor_g1_cor,  # valor cor
                                                     'valor_g2_cor': valor_g2_cor,
                                                     'valor_g3_cor': valor_g3_cor,
                                                     'horasC1': horasC1,  # horas cloro
@@ -203,9 +205,6 @@ def laboratorio(request):
                                                     'horasCOR1': horasCOR1,  # horas cor
                                                     'horasCOR2': horasCOR2,
                                                     'horasCOR3': horasCOR3,
-                                                    'horasF1': horasF1,  # horas cor
-                                                    'horasF2': horasF2,
-                                                    'horasF3': horasF3,
 
                                                     })
     elif request.method == 'POST':
@@ -260,15 +259,22 @@ def controle_operacional(request):
         cloro_estacao = request.POST.get('cloro_estacao')
         turbidez_estacao = request.POST.get('turbidez_estacao')
         relatorio = request.POST.get('relatorio')
+        fluor = request.POST.get('fluor')
 
         if relatorio == '':
             relatorio = 'Nada consta'
+
+        # Verifica se todos os campos do formulário foram preenchidos
+        if not all([pre_cloro, cloro_estacao, turbidez_estacao, fluor]):
+            messages.error(request, 'Preencha todas as informações corretamente')
+            return render(request, 'controle_operacional.html')
 
         try:
             salvar_dados = Controle_Operacional(usuario=nome,
                                                 data=datetime.datetime.now(),
                                                 pre_cloro=pre_cloro,
                                                 cloro_esstacao=cloro_estacao,
+                                                fluor=fluor,
                                                 turbidez_estacao=turbidez_estacao,
                                                 relatorio=relatorio,
 
@@ -284,3 +290,132 @@ def controle_operacional(request):
                                       'correto')
 
         return render(request, 'controle_operacional.html')
+
+
+def reservatorio(request):
+    if request.method == 'GET':
+        reservatorios = Cadastro_Reservatorio.objects.all()
+        return render(request, 'reservatorio.html', {'reservatorios': reservatorios})
+
+    elif request.method == 'POST':
+        nome = request.user
+        reservatorios = Cadastro_Reservatorio.objects.all()
+
+        id_reservatorios = request.POST.getlist('reservatorios')
+
+        # Obtém objetos Cadastro_Reservatorio correspondentes aos IDs
+        reservatorios_selecionados = Cadastro_Reservatorio.objects.filter(pk__in=id_reservatorios)
+
+        cloro = request.POST.get('cloro_reservatorio')
+        ph = request.POST.get('ph_reservatorio')
+        fluor = request.POST.get('fluor_reservatorio')
+        turbidez = request.POST.get('turbidez_reservatorio')
+        relatorio = request.POST.get('relatorio')
+
+        if relatorio == '':
+            relatorio = 'Nada consta'
+
+        # Verifica se todos os campos do formulário foram preenchidos
+        if not all([cloro, ph, turbidez, fluor, id_reservatorios]):
+            messages.error(request, 'Preencha todas as informações corretamente')
+            return render(request, 'controle_operacional.html')
+
+        try:
+            for reservatorio_selecionado in reservatorios_selecionados:
+                # Cria um objeto Reservatorio para cada reservatório selecionado
+                dados_reservatorio = Reservatorio(usuario=nome,
+                                                  reservatorio=reservatorio_selecionado,
+                                                  data=datetime.datetime.now(),
+                                                  cloro=cloro,
+                                                  ph=ph,
+                                                  fluor=fluor,
+                                                  turbidez=turbidez,
+                                                  relatorio=relatorio)
+                dados_reservatorio.save()
+                messages.success(request, 'Dados preenchidos corretamente')
+
+        except Exception as e:
+            print("Erro ao salvar:", e)  # Isso imprimirá informações sobre o erro no console do servidor
+            messages.warning(request, 'Provável erro no sistema, tente outra vez!')
+            messages.warning(request, 'Certifique-se de estar usando ponto em vez de vírgula, ex: "7.23" está '
+                                      'correto')
+            print("Erro ao salvar a análise:", e)
+
+        return render(request, 'reservatorio.html', {'reservatorios_selecionados': reservatorios_selecionados,
+                                                     'reservatorios': reservatorios,
+                                                     })
+
+
+def calculadora(request):
+    if request.method == 'GET':
+        return render(request, 'calculadora.html')
+    elif request.method == 'POST':
+        # bhaskara
+        a = float(request.POST.get('a'))
+        b = float(request.POST.get('b'))
+        c = float(request.POST.get('c'))
+
+        discriminante = (b ** 2) - (4 * a * c)
+
+        # Calcula as raízes
+        raiz1 = (-b + cmath.sqrt(discriminante)) / (2 * a)
+        raiz2 = (-b - cmath.sqrt(discriminante)) / (2 * a)
+
+        return render(request, 'calculadora.html', {'raiz1': raiz1,
+                                                    'raiz2': raiz2})
+
+
+def anotacoes_gerais(request):
+
+    if request.method == 'GET':
+        return render(request, 'anotacoes_gerais.html')
+    elif request.method == 'POST':
+        nome = request.user
+
+        titulo = request.POST.get('titulo')
+        nota = request.POST.get('nota')
+
+        # Verifica se todos os campos do formulário foram preenchidos
+        if not all([nota, titulo]):
+            messages.error(request, 'Preencha todas as informações corretamente')
+            return render(request, 'anotacoes_gerais.html')
+
+        try:
+            salvar_nota_titulo = Anotacoes(titulo=titulo,
+                                           nota=nota,
+                                           data=datetime.datetime.now(),
+                                           usuario=nome
+                                           )
+            salvar_nota_titulo.save()
+            messages.success(request, 'Sua nota foi salva com sucesso!')
+
+        except Exception as e:
+            print("Erro ao salvar:", e)  # Isso imprimirá informações sobre o erro no console do servidor
+            messages.warning(request, 'Provável erro no sistema, tente outra vez!')
+
+        return render(request, 'anotacoes_gerais.html')
+
+
+def ver_anotacoes(request):
+    if request.method == 'GET':
+        notas = Anotacoes.objects.all().order_by('-id')
+        return render(request, 'ver_anotacoes.html', {'notas': notas})
+    elif request.method == 'POST':
+        pro_titulo = request.POST.get('pro_titulo')
+
+        if pro_titulo == '':
+            notas = Anotacoes.objects.all().order_by('-id')
+            return render(request, 'ver_anotacoes.html', {'notas': notas})
+
+        busca_titulo = Anotacoes.objects.filter(titulo__contains=pro_titulo)
+        sem_resultado = ''
+
+        if len(busca_titulo) <= 0:
+            sem_resultado = '0 resultado encontrado'
+
+        return render(request, 'ver_anotacoes.html', {'busca_titulo': busca_titulo,
+                                                      'sem_resultado': sem_resultado})
+
+
+def prevencao(request):
+    pass

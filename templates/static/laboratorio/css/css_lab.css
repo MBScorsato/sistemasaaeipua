@@ -1,12 +1,13 @@
-body{
+/* Estilo para o corpo da página */
+body {
     background-image: linear-gradient(55deg, #B0E0E6, #ffffff);
 }
-/* Estilo para todos os inputs do tipo "number" */
-input[type="number"] {
-  width: 100px; /* Altere o valor conforme necessário */
-  font-size: 25px;
+
+/* Estilo para todos os inputs do tipo "number" e "text" */
+input[type="number"],
+input[type="text"],
+select {
+    width: 100px; /* Largura */
+    font-size: 23px; /* Tamanho da fonte */
 }
-input[type="text"] {
-  width: 100px; /* Altere o valor conforme necessário */
-  font-size: 25px;
-}
+

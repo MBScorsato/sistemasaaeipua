@@ -9,5 +9,6 @@ urlpatterns = [
     path('plataforma/hidrometro/', views.hidrometro, name='hidrometro'),
     path('plataforma/saida_de_caminhao_pipa/', views.saida_de_caminhao_pipa, name='saida_de_caminhao_pipa'),
     path('plataforma/mensagem/', views.mensagem, name='mensagem'),
+    path('sair/', views.logout_view, name='logout_view'),
 
 ]

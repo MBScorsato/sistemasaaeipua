@@ -1,0 +1,48 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title%}Ver Anotações{% endblock %}
+{% block body %}
+    <center>
+    <div class="card">
+        <div class="card-body">
+            <h1><b>Ver Anotações</b></h1>
+    </div>
+    </div>
+    </center>
+
+{% endblock %}
+{% block input %}
+<br>
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+  <form class="d-flex" role="search" action="" method="post">{% csrf_token %}
+      <input class="form-control me-1" type="search" placeholder=" Procurar pelo título . . . " aria-label="Search" name="pro_titulo">
+      <button class="btn btn-outline-success" type="submit">Procurar</button>
+    </form>
+  </div>
+</nav>
+<br>
+{% for item in notas %}
+<div class="card">
+  <div class="card-body">
+    <p><b>{{item.titulo}}</b></p>
+    <p>{{item.nota}}</p>
+      <p><i>{{item.data}} | {{ item.usuario }}</i></p>
+  </div>
+</div>
+{% endfor %}
+{% for item_pesquisa in busca_titulo %}
+<div class="card">
+  <div class="card-body">
+    <p><b>{{item_pesquisa.titulo}}</b></p>
+    <p>{{item_pesquisa.nota}}</p>
+    <p><i>{{item_pesquisa.data}} | {{ item_pesquisa.usuario }}</i></p>
+  </div>
+</div>
+   {% endfor %}
+
+    {% if sem_resultado %}
+<center><p><i>{{ sem_resultado }}</i></p></center>
+    {% endif %}
+<br><br><hr><br>
+{% endblock %}

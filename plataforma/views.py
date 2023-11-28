@@ -1,6 +1,8 @@
 import datetime
+
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.messages import constants
 from plataforma.models import Analise_Agua_tratada, Analise_Agua_bruta, OperadoresAviso, Parametro, Tabela_estoque_cal, \
@@ -580,6 +582,7 @@ def mensagem(request):
         buscar_msg = Mensagem.objects.all().order_by('-id')[:7]
 
         data = Mensagem.objects.last().data
+
         return render(request, 'mensagem.html', {'nome': nome,
                                                  'buscar_msg': buscar_msg,
                                                  'data': data,
@@ -638,3 +641,9 @@ def mensagem(request):
                                                  'buscar_msg': buscar_msg,
                                                  'data': data,
                                                  })
+
+
+def logout_view(request):
+    logout(request)
+    # Redirecione para onde você deseja após o logout
+    return redirect('operadores')
