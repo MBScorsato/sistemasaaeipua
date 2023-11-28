@@ -1,0 +1,54 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title%}Calculadora{% endblock %}
+{% block body %}
+    <center>
+    <div class="card">
+        <div class="card-body">
+            <h1><b>Calculadora</b></h1>
+    </div>
+    </div>
+    </center>
+{% endblock %}
+{% block input %}<br><br><hr><br>
+<center>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Fórmula de Bhaskara
+</button>
+
+
+<!-- Modal Bhaskara-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Bhaskara</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form action="{%url 'calculadora' %}" method="post">{% csrf_token %}
+            A:<input type="number" name="a" step="any">
+            B:<input type="number" name="b" step="any">
+            C:<input type="number" name="c" step="any">
+                   <button type="submit" class="btn btn-primary">Calcular</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div><br><br>
+
+{% if raiz1 %}
+    <div class="card border-danger mb-3" style="max-width: 18rem;">
+      <div class="card-body text-danger">
+        <h5 class="card-title">As raízes são</h5>
+        <p>Raiz 1: {{ raiz1.real|floatformat:3 }}{% if raiz1.imag != 0 %}{{ "+" }}{{ raiz1.imag|floatformat:3 }}i{% endif %}</p>
+        <p>Raiz 2: {{ raiz2.real|floatformat:3 }}{% if raiz2.imag != 0 %}{{ "+" }}{{ raiz2.imag|floatformat:3 }}i{% endif %}</p>
+
+      </div>
+    </div>
+</center>
+{% endif %}
+
+{% endblock %}

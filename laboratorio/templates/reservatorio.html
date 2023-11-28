@@ -1,0 +1,47 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title%}Reservatório{% endblock %}
+{% block body %}
+    <center>
+    <div class="card">
+        <div class="card-body">
+            <h1><b>Reservatório</b></h1>
+    </div>
+    </div>
+    </center>
+{% endblock %}
+{% block input %}<br><br>
+        <div class="message">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            <center>{{message}}</center>
+        </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+               <center> <form method="post" action="{% url 'reservatorio' %}">{% csrf_token %}
+                   <b> Cloro:</b>
+                    <input type="number" step="any" name="cloro_reservatorio" placeholder="0.00">
+                    <b> pH:</b>
+                    <input type="number" step="any" name="ph_reservatorio" placeholder="0.00">
+                    <b> Fluor:</b>
+                    <input type="number" step="any" name="fluor_reservatorio" placeholder="0.00">
+                    <b> Turbidez:</b>
+                    <input type="number" step="any" name="turbidez_reservatorio" placeholder="0.00">
+<label for="reservatorios"><b>Reservatório:</b></label>
+<select name="reservatorios" id="reservatorios">
+    {% for reservatorio in reservatorios %}
+        <option value="{{ reservatorio.id }}">{{ reservatorio.reservatorio_cadastrado }}</option>
+    {% endfor %}
+</select>
+
+                    <br><br>
+                    <textarea cols="60" rows="5" placeholder="Relatório" name="relatorio"></textarea><br><br>
+                    <input type="submit" value="Salvar" name="btn-form">
+               </form></center> {% for item in reservatorios_selecionados %}
+
+
+{% endfor %}
+<br><br><hr>
+{% endblock %}

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 
 class Analise_Agua_tratada(models.Model):
+
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # Campo para relacionar com o usuário
     cloro = models.FloatField()
     ph = models.FloatField()
@@ -83,12 +84,16 @@ class Parametro(models.Model):
         return self.parametro
 
 
-# essas class salva qual operador ultilizoou cal
+# essas class salva qual operador ultilizou cal
 class Cal_Quantidade(models.Model):
     quantidade = models.CharField(max_length=20)
     data = models.DateTimeField(default=timezone.now)
     operador = models.ForeignKey(User, on_delete=models.CASCADE)
     relatorio = models.TextField()
+
+    def __str__(self):
+        nome_usuario = self.operador.username
+        return f"Operador: {nome_usuario} - 1 saco de cal"
 
 
 # essa class salva o abastecimeto no estoque
