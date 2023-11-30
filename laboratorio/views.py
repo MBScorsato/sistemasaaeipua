@@ -398,24 +398,6 @@ def anotacoes_gerais(request):
 
 def ver_anotacoes(request):
     if request.method == 'GET':
-        notas = Anotacoes.objects.all().order_by('-id')
-        return render(request, 'ver_anotacoes.html', {'notas': notas})
+        return render(request, 'anotacoes_gerais.html')
     elif request.method == 'POST':
-        pro_titulo = request.POST.get('pro_titulo')
-
-        if pro_titulo == '':
-            notas = Anotacoes.objects.all().order_by('-id')
-            return render(request, 'ver_anotacoes.html', {'notas': notas})
-
-        busca_titulo = Anotacoes.objects.filter(titulo__contains=pro_titulo)
-        sem_resultado = ''
-
-        if len(busca_titulo) <= 0:
-            sem_resultado = '0 resultado encontrado'
-
-        return render(request, 'ver_anotacoes.html', {'busca_titulo': busca_titulo,
-                                                      'sem_resultado': sem_resultado})
-
-
-def prevencao(request):
-    pass
+        return render(request, 'anotacoes_gerais.html')

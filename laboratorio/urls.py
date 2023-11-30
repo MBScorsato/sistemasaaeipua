@@ -8,7 +8,4 @@ urlpatterns = [
     path('laboratorio/controle/operacional/reservatorio', views.reservatorio, name='reservatorio'),
     path('laboratorio/controle/operacional/calculadora', views.calculadora, name='calculadora'),
     path('laboratorio/controle/operacional/anotacoes/gerais', views.anotacoes_gerais, name='anotacoes_gerais'),
-    path('laboratorio/controle/operacional/ver/anotacoes', views.ver_anotacoes, name='ver_anotacoes'),
-    path('laboratorio/controle/operacional/prevencao', views.prevencao, name='prevencao'),
-
 ]
