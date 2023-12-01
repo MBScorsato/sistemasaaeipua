@@ -3,11 +3,11 @@ import datetime
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.http import HttpResponse
-from django.shortcuts import render
-from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes
+from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
+    Organiza_tarefa
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 
 
 def calcular_diferenca_em_horas():
@@ -19,7 +19,7 @@ def calcular_diferenca_em_horas():
         data1 = dates[0]
         data2 = dates[1]
         diferenca = data1 - data2
-        resultado = int(diferenca.total_seconds() / 3600)  # Converte os segundos em horas
+        resultado = int(diferenca.total_seconds() / 3600)   # Converte os segundos em horas
         print("Diferença em horas:", resultado)
         return resultado
     else:
@@ -169,7 +169,13 @@ def laboratorio(request):
         valor_g2_cor = grafico_cor[1]
         valor_g3_cor = grafico_cor[2]
 
-        return render(request, 'laboratorio.html', {'media_cloro': media_cloro,
+        # aviso caso tenha alguma tarefa
+
+
+
+
+        return render(request, 'laboratorio.html', {
+                                                    'media_cloro': media_cloro,
                                                     'media_turbidez': media_turbidez,
                                                     'media_ph': media_ph,
                                                     'media_fluor': media_fluor,
@@ -404,19 +410,59 @@ def ver_anotacoes(request):
                                                       })
     elif request.method == 'POST':
         pro_titulo = request.POST.get('pro_titulo')
+        sem_resultado = None  # Definir um valor padrão
 
-        # se clicar sem escrever nada o sistema devolve todos as  notas
         if pro_titulo == '':
             notas = Anotacoes.objects.all().order_by('-id')
-            return render(request, 'ver_anotacoes.html', {'notas': notas,
+            return render(request, 'ver_anotacoes.html', {'notas': notas})
 
-                                                          })
         busca_titulo = Anotacoes.objects.filter(titulo__contains=pro_titulo).order_by('-id')
 
         if len(busca_titulo) <= 0:
             sem_resultado = 'Sua busca teve 0 resultado'
 
         return render(request, 'ver_anotacoes.html', {'busca_titulo': busca_titulo,
-                                                      'sem_resultado': sem_resultado,
+                                                      'sem_resultado': sem_resultado})
 
-                                                      })
+
+def organizador_tarefas(request):
+    if request.method == 'GET':
+        return render(request, 'organizador_tarefas.html')
+    elif request.method == 'POST':
+        nome = request.user
+
+        data_selecionada = request.POST.get('data_selecionada')
+        lembrete = request.POST.get('lembrete')
+        print(data_selecionada)
+        print(lembrete)
+
+        try:
+            # Convertendo a string da data para um objeto datetime
+            data_formatada = datetime.datetime.strptime(data_selecionada, '%Y-%m-%d').date()
+
+            salvar_lembrete = Organiza_tarefa(
+                data_agora=timezone.now(),
+                usuario=nome,
+                data_selecionada=data_formatada,
+                lembrete=lembrete,
+                # O campo 'concluido' por definição já recebe False (model.py)
+            )
+            salvar_lembrete.save()
+
+        except ValueError as e:
+            # Se houver um erro ao converter a data
+            print("Erro ao converter a data:", e)
+
+        except Exception as e:
+            # Captura qualquer outro tipo de exceção durante o salvamento
+            print("Ocorreu um erro ao salvar o lembrete:", e)
+            # Aqui você pode adicionar ações adicionais, como logs ou mensagens para o usuário
+
+    return render(request, 'organizador_tarefas.html')
+
+
+def tarefas_aberta(request):
+    if request.method == 'GET':
+        return render(request, 'tarefas_aberto.html')
+    elif request.method == 'POST':
+        return render(request, 'tarefas_aberto.html')

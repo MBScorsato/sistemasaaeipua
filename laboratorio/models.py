@@ -1,13 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-
-
-class Senha(models.Model):
-    senha = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.senha
+from datetime import datetime
 
 
 class Numero_Media(models.Model):
@@ -66,3 +60,16 @@ class Anotacoes(models.Model):
 
     def __str__(self):
         return self.titulo
+
+
+class Organiza_tarefa(models.Model):
+    data_agora = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    data_selecionada = models.DateTimeField()
+    lembrete = models.TextField()
+    concluido = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.lembrete} || para o dia {self.data_selecionada.strftime("%d/%m/%Y")}'
+
+

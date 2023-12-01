@@ -16,18 +16,15 @@
   {% block bv %}{% endblock %}
 
     {% block body %}
-      {% for senha in senha%}
-        {{senha}}
-      {% endfor %}
-
-
 
   <nav class="navbar navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'plataforma' %}">Área dos Operadores</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{% url 'plataforma' %}">Área dos Operadores - </a>
+
+     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Controle/Análises</h5>
@@ -81,7 +78,9 @@
     <h3>Médias das últimas
       <input type="number" placeholder="00" style="width: 53px;" name="numero_analises" min="1" value="0">
        Análises <input type="submit" value="Ok"></h3>
+    </font>
     </form>
+
   <div class="card" style="width: 975px;">
   <div class="card-body">
     | <b>Cloro: {{ media_cloro|floatformat:2 }}</b> |
@@ -317,3 +316,5 @@ function drawChart_ph() {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </html>
+
+

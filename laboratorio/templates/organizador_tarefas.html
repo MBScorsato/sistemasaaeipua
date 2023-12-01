@@ -1,0 +1,63 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title %}
+    Organizador de Tarefas
+{% endblock %}
+{% block body %}
+    <center>
+        <div class="card">
+            <div class="card-body">
+                <h1><b>Organizador de Tarefas</b></h1>
+            </div>
+        </div>
+    </center>
+{% endblock %}
+{% block input %}
+    <br>
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}}">
+                    <center>{{message}}</center>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="container mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Lembrete de Tarefa - Que dia você quer ser lembrado?</h5>
+                    <font color="blue" face="verdana">
+                        Aqui você organiza suas principais tarefas ao longo dos dias/semanas/meses/anos...
+                    </font>
+                    <a href="{% url 'tarefas_aberta' %}">
+                        <button type="button" class="btn btn-warning">Veja as Tarefas</button>
+                    </a>
+                    <form method="post">
+                        {% csrf_token %}
+                        <br>
+                        <label><b>Selecione uma data:</b></label>
+                        <input type="date" name="data_selecionada">
+                        <div class="container mt-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <center>
+                                        <textarea cols="130" rows="5" placeholder="Digite seu lembrete e você sera lembrado . . . " name="lembrete"></textarea>
+                                    </center>
+                                    <center>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-success" type="submit">
+                                                - Salvar Lembrete - ok -
+                                            </button>
+                                        </div>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <hr>
+{% endblock %}
