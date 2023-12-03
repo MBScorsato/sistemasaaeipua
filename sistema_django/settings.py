@@ -141,3 +141,15 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
     constants.WARNING: 'alert-warning',
 }
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 0,  # Definir o tempo de vida do cache como zero para desabilitá-lo
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    }
+}

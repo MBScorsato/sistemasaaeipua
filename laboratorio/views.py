@@ -1,15 +1,20 @@
 import cmath
 import datetime
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
     Organiza_tarefa
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 
 
+# esta função aplica se para calcular a diferença de cal em horas
+# podendo utilizar em qualquer monento do sistema
 def calcular_diferenca_em_horas():
     # Consulta para obter as datas (horas)
     cal = Cal_Quantidade.objects.order_by('-id')[:2].values_list('data', flat=True)
@@ -19,7 +24,7 @@ def calcular_diferenca_em_horas():
         data1 = dates[0]
         data2 = dates[1]
         diferenca = data1 - data2
-        resultado = int(diferenca.total_seconds() / 3600)   # Converte os segundos em horas
+        resultado = int(diferenca.total_seconds() / 3600)  # Converte os segundos em horas
         print("Diferença em horas:", resultado)
         return resultado
     else:
@@ -27,9 +32,13 @@ def calcular_diferenca_em_horas():
         return 0
 
 
+# esta função é a principal (mãe) do app laboratorio
+# por ela sai as ramificalçoes para outra áreas
+@login_required(login_url='operadores')
 def laboratorio(request):
     if request.method == 'GET':
         usuario = request.user
+
         if hasattr(usuario, 'laboratorio'):
             laboratorio = usuario.laboratorio
             esta_autorizado = laboratorio.autorizado
@@ -37,6 +46,16 @@ def laboratorio(request):
                 return HttpResponse('<h1>Você tentou acessar de forma não permitida, hahahaha, tente outra vez!</h1>')
         else:
             return HttpResponse('<h1>Você não tem permissão para acessar esta página.</h1>')
+
+        # back end para veridicar se tem alguma tarefa pra hoje
+        datas_selecionadas = list(Organiza_tarefa.objects.values_list('data_selecionada__date', flat=True).distinct())
+        data_atual = timezone.localdate()  # data de agora
+        mensagem_lembrete = ''
+        for item in datas_selecionadas:
+            if data_atual == item:
+                print(f"A data de hoje {data_atual} coincide com uma das datas das tarefas.")
+                mensagem_lembrete = 'Tem tarefas programdas para hoje, CLICK AQUI'
+
 
         valor_n = Numero_Media.objects.first().n
         if valor_n < 0:
@@ -171,48 +190,46 @@ def laboratorio(request):
 
         # aviso caso tenha alguma tarefa
 
-
-
-
         return render(request, 'laboratorio.html', {
-                                                    'media_cloro': media_cloro,
-                                                    'media_turbidez': media_turbidez,
-                                                    'media_ph': media_ph,
-                                                    'media_fluor': media_fluor,
-                                                    'resultado': resultado,
-                                                    'r_cal': r_cal,
-                                                    'valor_g1_cloro': valor_g1_cloro,  # valor cloro
-                                                    'valor_g2_cloro': valor_g2_cloro,
-                                                    'valor_g3_cloro': valor_g3_cloro,
-                                                    'valor_g1_ph': valor_g1_ph,  # valor pH
-                                                    'valor_g2_ph': valor_g2_ph,
-                                                    'valor_g3_ph': valor_g3_ph,
-                                                    'valor_g1_fluor': valor_g1_fluor,  # valor flúor
-                                                    'valor_g2_fluor': valor_g2_fluor,
-                                                    'valor_g3_fluor': valor_g3_fluor,
-                                                    'valor_g1_turbidez': valor_g1_turbidez,  # valor turbdez
-                                                    'valor_g2_turbidez': valor_g2_turbidez,
-                                                    'valor_g3_turbidez': valor_g3_turbidez,
-                                                    'valor_g1_cor': valor_g1_cor,  # valor cor
-                                                    'valor_g2_cor': valor_g2_cor,
-                                                    'valor_g3_cor': valor_g3_cor,
-                                                    'horasC1': horasC1,  # horas cloro
-                                                    'horasC2': horasC2,
-                                                    'horasC3': horasC3,
-                                                    'horasP1': horasP1,  # horas ph
-                                                    'horasP2': horasP2,
-                                                    'horasP3': horasP3,
-                                                    'horasF1': horasF1,  # horas flúor
-                                                    'horasF2': horasF2,
-                                                    'horasF3': horasF3,
-                                                    'horasT1': horasT1,  # horas turbidez
-                                                    'horasT2': horasT2,
-                                                    'horasT3': horasT3,
-                                                    'horasCOR1': horasCOR1,  # horas cor
-                                                    'horasCOR2': horasCOR2,
-                                                    'horasCOR3': horasCOR3,
+            'media_cloro': media_cloro,
+            'media_turbidez': media_turbidez,
+            'media_ph': media_ph,
+            'media_fluor': media_fluor,
+            'resultado': resultado,
+            'r_cal': r_cal,
+            'valor_g1_cloro': valor_g1_cloro,  # valor cloro
+            'valor_g2_cloro': valor_g2_cloro,
+            'valor_g3_cloro': valor_g3_cloro,
+            'valor_g1_ph': valor_g1_ph,  # valor pH
+            'valor_g2_ph': valor_g2_ph,
+            'valor_g3_ph': valor_g3_ph,
+            'valor_g1_fluor': valor_g1_fluor,  # valor flúor
+            'valor_g2_fluor': valor_g2_fluor,
+            'valor_g3_fluor': valor_g3_fluor,
+            'valor_g1_turbidez': valor_g1_turbidez,  # valor turbdez
+            'valor_g2_turbidez': valor_g2_turbidez,
+            'valor_g3_turbidez': valor_g3_turbidez,
+            'valor_g1_cor': valor_g1_cor,  # valor cor
+            'valor_g2_cor': valor_g2_cor,
+            'valor_g3_cor': valor_g3_cor,
+            'horasC1': horasC1,  # horas cloro
+            'horasC2': horasC2,
+            'horasC3': horasC3,
+            'horasP1': horasP1,  # horas ph
+            'horasP2': horasP2,
+            'horasP3': horasP3,
+            'horasF1': horasF1,  # horas flúor
+            'horasF2': horasF2,
+            'horasF3': horasF3,
+            'horasT1': horasT1,  # horas turbidez
+            'horasT2': horasT2,
+            'horasT3': horasT3,
+            'horasCOR1': horasCOR1,  # horas cor
+            'horasCOR2': horasCOR2,
+            'horasCOR3': horasCOR3,
+            'mensagem_lembrete': mensagem_lembrete,
 
-                                                    })
+        })
     elif request.method == 'POST':
 
         # quantidade de analises para calculo de média
@@ -245,6 +262,9 @@ def laboratorio(request):
         return response
 
 
+# analises internas, podendo ter várias ramificações
+# para vários tipos de analises, seria a sub-mãe deste área
+@login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
         return render(request, 'analises_basica_interna.html')
@@ -253,6 +273,10 @@ def analises_basica_interna(request):
         return render(request, 'analises_basica_interna.html')
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por gravar análises feitas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def controle_operacional(request):
     if request.method == 'GET':
         return render(request, 'controle_operacional.html')
@@ -298,6 +322,10 @@ def controle_operacional(request):
         return render(request, 'controle_operacional.html')
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por gravar análises do reservatorio feitas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def reservatorio(request):
     if request.method == 'GET':
         reservatorios = Cadastro_Reservatorio.objects.all()
@@ -352,10 +380,15 @@ def reservatorio(request):
                                                      })
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por fazer calculos feitas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def calculadora(request):
     if request.method == 'GET':
         return render(request, 'calculadora.html')
     elif request.method == 'POST':
+
         # bhaskara
         a = float(request.POST.get('a'))
         b = float(request.POST.get('b'))
@@ -371,8 +404,11 @@ def calculadora(request):
                                                     'raiz2': raiz2})
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por gravar as anotaçoes feitas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def anotacoes_gerais(request):
-
     if request.method == 'GET':
         return render(request, 'anotacoes_gerais.html')
     elif request.method == 'POST':
@@ -402,6 +438,10 @@ def anotacoes_gerais(request):
         return render(request, 'anotacoes_gerais.html')
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por 'ver' anotações feitas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def ver_anotacoes(request):
     if request.method == 'GET':
         notas = Anotacoes.objects.all().order_by('-id')
@@ -425,6 +465,10 @@ def ver_anotacoes(request):
                                                       'sem_resultado': sem_resultado})
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
+# ela é responsavel por gravar futuras tarefas pelos operadoes ou técnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def organizador_tarefas(request):
     if request.method == 'GET':
         return render(request, 'organizador_tarefas.html')
@@ -433,6 +477,11 @@ def organizador_tarefas(request):
 
         data_selecionada = request.POST.get('data_selecionada')
         lembrete = request.POST.get('lembrete')
+
+        if not all([data_selecionada, lembrete]):
+            messages.error(request, 'Preencha todas as informações corretamente')
+            return render(request, 'organizador_tarefas.html')
+
         print(data_selecionada)
         print(lembrete)
 
@@ -448,21 +497,50 @@ def organizador_tarefas(request):
                 # O campo 'concluido' por definição já recebe False (model.py)
             )
             salvar_lembrete.save()
+            messages.add_message(request, constants.SUCCESS, 'Lembrete salvo com sucesso')
 
         except ValueError as e:
             # Se houver um erro ao converter a data
             print("Erro ao converter a data:", e)
+            messages.warning(request, f'Provável erro no sistema, tente outra vez! {e} / converter data')
 
         except Exception as e:
             # Captura qualquer outro tipo de exceção durante o salvamento
             print("Ocorreu um erro ao salvar o lembrete:", e)
-            # Aqui você pode adicionar ações adicionais, como logs ou mensagens para o usuário
+            messages.warning(request, f'Provável erro no sistema, tente outra vez! {e} / PRESS F5')
 
     return render(request, 'organizador_tarefas.html')
 
 
+# esta função esta ligada ou seja é filha da função 'def analises_basica_interna' ou 'def organizador_tarefas'
+# existem doi caminhos para esa view, a primeira é através do html: organizador_tarefas.html a senga forma
+# é quando existe uma tarefa para realizar no dia que aparecerá na aba laboratorio.html um borão ou link
+# para ser clicado e ai sim ler e marcar como tarefa feita, ou não caso não tenha feio ainda
+# ela é responsavel por pesquisar e se preciso resolvar as tarefas abertas pelos operadoes ou tecnicos que tem
+# a autorização de adrentar na aba 'Laboratório'
+@login_required(login_url='operadores')
 def tarefas_aberta(request):
     if request.method == 'GET':
-        return render(request, 'tarefas_aberto.html')
-    elif request.method == 'POST':
-        return render(request, 'tarefas_aberto.html')
+        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+        # print(lembretes_pendentes)
+        return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
+
+                                                       })
+    if request.method == 'POST':
+        tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
+
+        # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
+        tarefa = get_object_or_404(Organiza_tarefa, pk=tarefa_id)
+
+        # Remove a tarefa
+        tarefa.delete()
+
+        # obter e exibir as tarefas abertas continua aqui
+        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+    return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes})
+
+# sair do sistema
+def logout_view(request):
+    logout(request)
+    # Redirecione para onde você deseja após o logout
+    return redirect('operadores')

@@ -33,7 +33,7 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Sair</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'logout_view' %}">Sair</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'analises_basica_interna' %}">Análises Básica Interna</a>
@@ -80,6 +80,12 @@
        Análises <input type="submit" value="Ok"></h3>
     </font>
     </form>
+    {% if mensagem_lembrete %}
+      <a href="{% url 'tarefas_aberta' %}" style="color: red;">
+          {{ mensagem_lembrete }}
+      </a>
+        {% else %}
+    {% endif %}
 
   <div class="card" style="width: 975px;">
   <div class="card-body">

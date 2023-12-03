@@ -12,5 +12,6 @@ urlpatterns = [
     path('laboratorio/controle/operacional/ver/anotacoes/', views.ver_anotacoes, name='ver_anotacoes'),
     path('laboratorio/controle/operacional/organizador/tarefas', views.organizador_tarefas, name='organizador_tarefas'),
     path('laboratorio/controle/operacional/organizador/tarefas/aberta', views.tarefas_aberta, name='tarefas_aberta'),
+    path('laboratorio/sair/', views.logout_view, name='logout_view'),
 
 ]

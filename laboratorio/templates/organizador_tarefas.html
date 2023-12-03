@@ -25,13 +25,11 @@
         <div class="container mt-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Lembrete de Tarefa - Que dia você quer ser lembrado?</h5>
-                    <font color="blue" face="verdana">
-                        Aqui você organiza suas principais tarefas ao longo dos dias/semanas/meses/anos...
-                    </font>
+                    <h5 class="card-title">Lembrete de Tarefa - Que dia você quer ser lembrado?
+
                     <a href="{% url 'tarefas_aberta' %}">
                         <button type="button" class="btn btn-warning">Veja as Tarefas</button>
-                    </a>
+                    </a></h5>
                     <form method="post">
                         {% csrf_token %}
                         <br>
