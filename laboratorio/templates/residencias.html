@@ -1,0 +1,64 @@
+{% extends 'base3.html' %}
+{% load static %}
+
+{% block title %}
+    Residência/Poços Particulares
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}
+
+{% block input %}
+    <center>
+        <h2>Análises em Residência/Poços Particulares</h2>
+        <br>
+<div class="message">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {{message.tags}}">
+        <center>{{message}}</center>
+    </div>
+    {% endfor %}
+    {% endif %}</div>
+
+
+    </center>
+    <div class="card">
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <!-- Conteúdo da coluna esquerda -->
+                        <form action="{% url 'residencias' %}" method="post">{% csrf_token %}
+                            <h4>Cadastro Propriedade</h4>
+                            <p>Cidade/sigla estado <br><input type="text" name="cidade"></p>
+                            <p>Bairro/Nome da propriedade <br><input type="text" name="bairro"></p>
+                            <p>Rua/número/km da propriedade <br><input type="text" name="rua"></p>
+                            <p>Nome <br><input type="text" name="nome"></p>
+                            <p>E-Mail <br><input type="text" name="email"></p>
+                            <p>Telefone <br><input type="text" name="telefone"></p>
+                    </div>
+                    <div class="col">
+                        <!-- Conteúdo da coluna direita -->
+                        <h4>Análises</h4>
+                        <p>Cloro <br><input type="text" name="cloro"></p>
+                        <p>Flúor <br><input type="text" name="fluor"></p>
+                        <p>pH <br><input type="text" name="ph"></p>
+                        <p>Turbidez <br><input type="text" name="turbidez"></p>
+<p>Coliformes <br>
+    <select name="analise" id="analise">
+        <option value="Sem Análise">Sem Análise</option>
+        <option value="Análise em Andamento">Análise em Andamento</option>
+        <option value="Ausente">Ausente</option>
+        <option value="Presente">Presente</option>
+    </select>
+</p>
+                        <input type="submit" value="SALVAR" class="btn btn-dark">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

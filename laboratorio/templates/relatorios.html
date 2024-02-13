@@ -1,0 +1,61 @@
+{% extends 'base3.html' %}
+{% load static %}
+
+{% block title %}
+    Relatórios
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}
+
+{% block input %}
+<center>
+    <h2>Relatórios</h2>
+    <br>
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}}">
+                    <center>{{message}}</center>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <form action="{% url 'relatorios' %}" method="post">{% csrf_token %}
+        <input name="nome_pesquisa" type="text" placeholder="Buscar Análises Pelo NOME">
+        <input type="submit" value=" Ok ">
+    </form>
+    <hr>
+    <font color="blue" font="verdana" size="5"><b>Histórico de "Analises Externas"</b></font>
+    <br>   <i>{{mensagem_pesquisa}}</i>
+
+    {% for item in mosta_analise %}
+        <div class="card mb-1" style="max-width: 80rem;">
+            <br>
+            <h5 class="card-title">
+                <a href="{% url 'pdf_relatorio' item.id %}" style="text-decoration: none; color: red;">
+                    <p> {{item.nome}}, {{ item.cidade }}, {{ item.rua }}, <b>Coliformes: <u>{{item.analise}}</u></b></p>
+                </a>
+            </h5>
+        </div>
+    {% endfor %}
+
+
+        {% for item in busca_titulo %}
+        <div class="card mb-1" style="max-width: 80rem;">
+            <br>
+            <h5 class="card-title">
+                <a href="{% url 'pdf_relatorio' item.id %}" style="text-decoration: none; color: red;">
+                    <p> {{item.nome}}, {{ item.cidade }},
+                        {{ item.rua }},
+                        <b>Coliformes: <u>{{item.analise}}</u></b></p>
+                </a>
+            </h5>
+        </div>
+    {% endfor %}
+
+
+    <i>{{nota}}</i></center>
+{% endblock %}
