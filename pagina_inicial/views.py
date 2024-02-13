@@ -6,6 +6,7 @@ from django.contrib.messages import constants
 
 def index(request):
     if request.method == 'GET':
+
         # buscar no banco todas as postagem ja disponibilizadas
         # estas postagem é referente a classe Aviso do arquivo models.py
         # para criar um Aviso usa-se o admin do django
@@ -14,11 +15,21 @@ def index(request):
 
         publicar_reclame = Reclame.objects.filter(boolean=True).order_by('-id')[:10]
 
-        objeto = Contato.objects.all().order_by('-id')[:1]
+        objeto = Contato.objects.all().order_by('-id')[:1]  # busca do banco 1 valor apenas
+
+        # este bloco é importante para garantir que o sistema vai rodar
+        #  primeira vez sem erro, Acaso dê erro o ADM cadastrsdo vai ter
+        # que preencher manualmete na area Django-Admin, para rodar a primeira vez
+        tel = None
+        cidade_estado = None
+        email = None
+        ###############################################################################
+
         for item in objeto:
             tel = item.telefone
             cidade_estado = item.cidade_estado
             email = item.email
+
         return render(request, 'index.html', {'postagem': postagem,
                                               'publicar_reclame': publicar_reclame,
                                               'tel': tel,

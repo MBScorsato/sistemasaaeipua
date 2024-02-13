@@ -5,7 +5,6 @@ from datetime import datetime
 
 
 class Numero_Media(models.Model):
-
     n = models.IntegerField()
 
     def __str__(self):
@@ -21,6 +20,10 @@ class Controle_Operacional(models.Model):
     turbidez_estacao = models.FloatField()
     relatorio = models.TextField()
 
+    class Meta:
+        verbose_name = "Controle Operacional"
+        verbose_name_plural = "Controle Operacional"
+
     def __str__(self):
         # Obtendo o nome de usuário do usuário relacionado
         nome_usuario = self.usuario.username
@@ -31,6 +34,10 @@ class Controle_Operacional(models.Model):
 class Cadastro_Reservatorio(models.Model):
     reservatorio_cadastrado = models.CharField(max_length=200)
     litro = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Cadastro Reservatório"
+        verbose_name_plural = "Cadastro Reservatório"
 
     def __str__(self):
         return f'Reservatório: {self.reservatorio_cadastrado}'
@@ -51,6 +58,10 @@ class Reservatorio(models.Model):
         nome_usuario = self.usuario.username
         return f'Operador: {nome_usuario} - Reservatório: {self.reservatorio.reservatorio_cadastrado}'
 
+        class Meta:
+            verbose_name = "Reservatório"
+            verbose_name_plural = "Reservatório"
+
 
 class Anotacoes(models.Model):
     titulo = models.CharField(max_length=100)
@@ -60,6 +71,10 @@ class Anotacoes(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    class Meta:
+        verbose_name = "Anotações"
+        verbose_name_plural = "Anotações"
 
 
 class Organiza_tarefa(models.Model):
@@ -73,3 +88,37 @@ class Organiza_tarefa(models.Model):
         return f'{self.lembrete} || para o dia {self.data_selecionada.strftime("%d/%m/%Y")}'
 
 
+class Informacoes_Analises_Basicas_Interna(models.Model):
+    titulo = models.CharField(max_length=150)
+    informativo = models.TextField()
+
+    class Meta:
+        verbose_name = "Informe para Análises básicas internas"
+        verbose_name_plural = "Informe para Análises básicas internas"
+
+    def __str__(self):
+        return self.titulo
+
+
+class Banco_Reservatorio_temporal(models.Model):
+    cidade = models.CharField(max_length=100)
+    bairro = models.CharField(max_length=100)
+    rua = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    telefone = models.CharField(max_length=100)
+    cloro = models.CharField(max_length=100)
+    fluor = models.CharField(max_length=100)
+    ph = models.CharField(max_length=100)
+    turbidez = models.CharField(max_length=100)
+    analise = models.CharField(max_length=50)
+    data_agora = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    observacao = models.TextField()
+
+    class Meta:
+        verbose_name = "Relatorio"
+        verbose_name_plural = "Relatorio"
+
+    def __str__(self):
+        return f'Cidade: {self.cidade}, Endereço: {self.rua}, Nome: {self.nome}'

@@ -40,12 +40,12 @@
           </li>
                     </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Análises Primeiro Grau</a>
+            <a class="nav-link" href="#">Análises Avançadas</a>
           </li>
           <li class="nav-item dropdown">
                       </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Análises Segundo Grau</a>
+            <a class="nav-link" href="{% url 'cadastro_patrimonio' %}">Cadastro de patrimônio</a>
           </li>
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Análises Externas
@@ -54,13 +54,13 @@
             <a class="nav-link" href="#">Status de Patrimônio</a>
           </li>
             <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a class="dropdown-item" href="{% url 'relatorios' %}">Retatórios</a></li>
               <li><a class="dropdown-item" href="#">Poços - SAAE</a></li>
-              <li><a class="dropdown-item" href="#">Poços - Particulares</a></li>
-              <li><a class="dropdown-item" href="#">Residência</a></li>
+              <li><a class="dropdown-item" href="{% url 'residencias' %}">Residência/Poços Particulares</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="#">Registro de Manutenção</a></li>
+              <li><a class="dropdown-item" href="#">Registro de Manutenção externa</a></li>
             </ul>
           </li>
         </ul>

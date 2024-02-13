@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from plataforma.models import Analise_Agua_tratada, Analise_Agua_bruta, OperadoresAviso, Parametro, Tabela_estoque_cal, \
     Cal_Quantidade, Hidrometro, SaidaCaminhaPipa, Mensagem
+from django.contrib.auth.models import User
 
 
 # Def é a principal, depois de logar cai nesta def
@@ -35,9 +36,22 @@ def plataforma(request):
         # busca aviso no banco de dados
         avisos = OperadoresAviso.objects.all()
 
-        # buscar do banco a ultima análise para mostrar no HTML,
-        ultimo_operador = Cal_Quantidade.objects.last().operador
-        ultimo_data = Cal_Quantidade.objects.last().data
+        # buscar do banco a última análise para mostrar no HTML,
+        # todos_operadores = User.objects.all()
+        # quantidade_usuarios = todos_operadores.count()
+        # print(f'quantidade de usuario:  {quantidade_usuarios}')
+
+        ultimo_cal = Cal_Quantidade.objects.last()
+        if ultimo_cal:
+            ultimo_operador = ultimo_cal.operador
+        else:
+            ultimo_operador = 'Ninguém'
+
+        ultimo_cal = Cal_Quantidade.objects.last()
+        if ultimo_cal:
+            ultimo_data = ultimo_cal.data
+        else:
+            ultimo_data = '???'
 
         if len(avisos) > 0:
             return render(request, 'plataforma.html', {'nome': nome,

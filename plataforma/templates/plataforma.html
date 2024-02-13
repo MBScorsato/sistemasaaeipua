@@ -44,37 +44,37 @@
         {% for item in parametro %}
         <table border="2">
         <tr>
-            <th> Parâmetro</th>
+            <th> <b>Parâmetro</b></th>
             <th>Min.</th>
             <th>Ideal</th>
             <th>Max.</th>
         </tr>
         <tr>
-            <td> FLUOR</td>
+            <td> <b>FLUOR</b></td>
             <td>{{ item.fluor_min }} ppm</td>
             <td>{{ item.fluor_ideal }} ppm</td>
             <td>{{ item.fluor_max }} ppm</td>
         </tr>
         <tr>
-            <td> CLORO</td>
+            <td> <b>CLORO</b></td>
             <td>{{ item.cloro_min }} ppm</td>
             <td>{{ item.cloro_ideal }} ppm</td>
             <td>{{ item.cloro_max }} ppm</td>
         </tr>
         <tr>
-            <td> PH</td>
+            <td> <b>PH</b></td>
             <td>{{ item.ph_min }}</td>
             <td>{{ item.ph_ideal }}</td>
             <td>{{ item.ph_max }}</td>
         </tr>
         <tr>
-            <td> COR</td>
+            <td> <b>COR</b></td>
             <td>{{ item.cor_min }} uH</td>
             <td>{{ item.cor_ideal }} uH</td>
             <td>{{ item.cor_max }} uH</td>
         </tr>
         <tr>
-            <td> TURBIDEZ</td>
+            <td> <b>TURBIDEZ</b></td>
             <td>{{ item.turbidez_min }} uT</td>
             <td>{{ item.turbidez_ideal }} uT</td>
             <td>{{ item.turbidez_max }} uT</td>
@@ -89,6 +89,15 @@
            {% for msg in avisos %}
               {{ msg }}
            {% endfor %}
+    {% else %}
+              Vá para o DJANGO-ADM deixe uma mensagem,<br>
+              Sempre deixe uma mensagem pré-definida,<br><br>
+              app: Plataformam<br>
+              campo: Operadores avisos<br><br>
+              Com essa mensagem o template se ajeita,<br>
+              e a parte visual melhora, é nescessário sempre<br>
+              ter uma mensagem, mesmo que seja padrão,<br>
+              do tipo: <b>Sem Mensagem do ADM</b>
     {% endif %}
           </div>
 
@@ -97,7 +106,6 @@
 <span class="badge rounded-pill text-bg-dark" style="font-size: 23px;">
     {{ultimo_operador}} adicionou cal pela última vez no dia {{ultimo_data}}
 </span>
-
 <br><br>
 <center>
     <h6>

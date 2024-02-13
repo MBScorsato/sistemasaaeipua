@@ -1,16 +1,21 @@
 import cmath
 import datetime
+import io
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
-    Organiza_tarefa
+    Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from io import BytesIO
 
 
 # esta função aplica se para calcular a diferença de cal em horas
@@ -37,6 +42,7 @@ def calcular_diferenca_em_horas():
 @login_required(login_url='operadores')
 def laboratorio(request):
     if request.method == 'GET':
+
         usuario = request.user
 
         if hasattr(usuario, 'laboratorio'):
@@ -56,6 +62,12 @@ def laboratorio(request):
                 print(f"A data de hoje {data_atual} coincide com uma das datas das tarefas.")
                 mensagem_lembrete = 'Tem tarefas programdas para hoje, CLICK AQUI'
 
+        # é preciso adicionar pela primera vez no ADM
+        # um número para a média va em:
+        # DJANGO-ADM: App Laboratorio
+        # campo: Numero_medias insira manualmete 1 número
+        # pode ser qualquer número como por exeplo o nímero 3
+        # isso sera somente a primera vez que rodar o sistema
 
         valor_n = Numero_Media.objects.first().n
         if valor_n < 0:
@@ -267,7 +279,8 @@ def laboratorio(request):
 @login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
-        return render(request, 'analises_basica_interna.html')
+        informativo = Informacoes_Analises_Basicas_Interna.objects.all()
+        return render(request, 'analises_basica_interna.html', {'informativo': informativo}, )
 
     if request.method == 'POST':
         return render(request, 'analises_basica_interna.html')
@@ -538,6 +551,189 @@ def tarefas_aberta(request):
         # obter e exibir as tarefas abertas continua aqui
         lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
     return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes})
+
+
+@login_required(login_url='operadores')
+def residencias(request):
+    if request.method == 'GET':
+        return render(request, 'residencias.html')
+    if request.method == 'POST':
+        nome = request.user
+        cidade = request.POST.get('cidade')
+        bairro = request.POST.get('bairro')
+        rua = request.POST.get('rua')
+        nome_residencia = request.POST.get('nome')
+        email = request.POST.get('email')
+        telefone = request.POST.get('telefone')
+
+        cloro = request.POST.get('cloro')
+        fluor = request.POST.get('fluor')
+        ph = request.POST.get('ph')
+        turbidez = request.POST.get('turbidez')
+        coliformes = request.POST.get('analise')
+        print(coliformes)
+
+        # criar 2 tabelas
+        # 1º para guardar os dados temporários
+        # >> essa tabela guardará os dados ate que seja confirmada as análises
+        # 2º para guarda em defenitivo sendo possivel apenas no django-admin o crud
+        # >> so guardará os dados depois que forfirmar as analises
+
+        # Verifica se os campos do formulário foram preenchidos
+        if not all([cidade, bairro, rua, nome, ]):
+            messages.error(request, 'Cidade, Bairro, Rua e Nome; OBRIGATÓRIO PREENCHER')
+            return render(request, 'residencias.html')
+
+        if email == '':
+            email = 'Nada consta'
+        if telefone == '':
+            telefone = 'Nada consta'
+
+        try:
+            salva_dados_residencia = Banco_Reservatorio_temporal(
+                data_agora=timezone.now(),
+                usuario=nome,
+                cidade=cidade,
+                bairro=bairro,
+                rua=rua,
+                nome=nome_residencia,
+                email=email,
+                telefone=telefone,
+                cloro=cloro,
+                fluor=fluor,
+                ph=ph,
+                turbidez=turbidez,
+                analise=coliformes,
+                observacao='Nada consta'
+            )
+            salva_dados_residencia.save()
+            messages.success(request, 'Dados preenchidos corretamente')
+
+        except:
+            messages.warning(request, 'Erro interno do sistema. Tente novamente.')
+            messages.warning(request, 'Certifique-se de estar usando ponto em vez de vírgula, ex: "7.23" está correto')
+            return render(request, 'residencias.html')
+
+        return render(request, 'residencias.html')
+
+
+@login_required(login_url='operadores')
+def relatorios(request):
+    if request.method == 'GET':
+        nota = ''
+        try:
+            mosta_analise = Banco_Reservatorio_temporal.objects.order_by('-id')
+        except:
+            nota = 'Não foi possivel caregar nem uma irformaçao, erro interno tente outra vez!'
+        if len(mosta_analise) <= 0:
+            nota = 'Não existe análises em aberto'
+
+        return render(request, 'relatorios.html', {'mosta_analise': mosta_analise,
+                                                   'nota': nota, })
+
+    elif request.method == 'POST':
+        nome_relatorio_pesquisa = request.POST.get('nome_pesquisa').strip()
+        mensagem_pesquisa = ''
+        try:
+            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by('-id')
+        except:
+            mensagem_pesquisa = 'PRESS F5, e tente outra vez!'
+        if not busca_titulo:
+            mensagem_pesquisa = 'Sem resultado para a sua busca'
+        return render(request, 'relatorios.html', {'busca_titulo': busca_titulo,
+                                                    'mensagem_pesquisa': mensagem_pesquisa,
+                                                   })
+
+
+@login_required(login_url='operadores')
+def pdf_relatorio(request, pk):
+    if request.method == 'GET':
+
+        # Obtendo o objeto Banco_Reservatorio_temporal com o ID fornecido (pk)
+        dados_id_pk = Banco_Reservatorio_temporal.objects.get(pk=pk)
+
+        # Atribuindo cada atributo a uma variável
+        cidade = dados_id_pk.cidade
+        bairro = dados_id_pk.bairro
+        rua = dados_id_pk.rua
+        nome = dados_id_pk.nome
+        email = dados_id_pk.email
+        telefone = dados_id_pk.telefone
+        cloro = dados_id_pk.cloro
+        fluor = dados_id_pk.fluor
+        ph = dados_id_pk.ph
+        turbidez = dados_id_pk.turbidez
+        coliformes = dados_id_pk.analise
+        data_abertura_analise = dados_id_pk.data_agora
+        operador = dados_id_pk.usuario
+        observacao = dados_id_pk.observacao
+        id_pdf = dados_id_pk.id
+
+        # Criar PDF
+        buffer = io.BytesIO()
+        cnv = canvas.Canvas(buffer)
+        cnv.setFont("Helvetica", 22)
+        cnv.drawString(25, 790, "SERVIÇO AUTÔNOMO DE ÁGUA E ESGOTO DE IPUÃ")
+        cnv.setFont("Helvetica", 15)
+        cnv.drawString(47, 765, "Este documento só será válido com a assinatura do químico responsável")
+        cnv.line(10, 780, 580, 780)
+        cnv.setFont("Helvetica", 22)
+        cnv.drawString(47, 725, "Resultado das Análises a água consumida:")
+
+        cnv.setFont("Helvetica", 15)
+        cnv.drawString(47, 695, f"Autor das análises: {operador}")
+        cnv.drawString(47, 675, f"Data das análises: {dados_id_pk.data_agora.strftime('%d/%m/%Y')}")
+
+        cnv.drawString(47, 645, f"Cidade: {cidade}")
+        cnv.drawString(47, 625, f"Bairro: {bairro}")
+        cnv.drawString(47, 605, f"Rua/av.: {rua}")
+        cnv.drawString(47, 585, f"Nome: {nome}")
+
+        cnv.setFont("Helvetica", 18)
+        cnv.drawString(47, 530, f"CLORO: {cloro}")
+        cnv.drawString(300, 530, f"pH: {ph}")
+        cnv.drawString(47, 480, f"FLÚOR: {fluor}")
+        cnv.drawString(300, 480, f"TURBIDEZ: {turbidez}")
+        cnv.drawString(47, 430, f"COLIFORMES: {coliformes}")
+
+        cnv.setFont("Helvetica", 14)
+        tamanho = len(observacao)
+        cnv.drawString(47, 370, f"OBSERVAÇÕES:")
+
+        # Divide o texto em linhas
+        # A variavel observacao sempre que for maior que a folha A4
+        # o código a seguir conta as strings e quebra as linha.
+        linhas = [observacao[i:i + 70] for i in range(0, tamanho, 70)]
+
+        # Escreve as linhas no PDF
+        y = 340  # Posição Y inicial
+        for linha in linhas:
+            cnv.drawString(70, y, f"{linha}")
+            y -= 15  # Move para a próxima linha
+
+        cnv.setFont("Helvetica", 12)
+        cnv.drawString(27, 80, f"Assinatura do químico responsável: __________________________________________________")
+
+        cnv.save()
+
+        # Retornar o PDF como uma resposta HTTP
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="pdf_{id_pdf}_analise.pdf"'
+        response.write(buffer.getvalue())
+
+        return response
+
+    elif request.method == 'POST':
+        return render(request, 'id_pdf.html')
+
+
+@login_required(login_url='operadores')
+def cadastro_patrimonio(request):
+    if request.method == 'GET':
+        return render(request, 'cadastro_patrimonio.html')
+    elif request.method == 'POST':
+        return render(request, 'cadastro_patrimonio.html')
+
 
 # sair do sistema
 def logout_view(request):
