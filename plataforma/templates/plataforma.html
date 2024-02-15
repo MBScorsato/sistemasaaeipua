@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head %}
-    <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
+<link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}" xmlns="http://www.w3.org/1999/html">
 {% endblock %}
 
 {% block titulo %}
@@ -103,20 +103,22 @@
 
       </div>
       </div><br>
-<span class="badge rounded-pill text-bg-dark" style="font-size: 23px;">
-    {{ultimo_operador}} adicionou cal pela última vez no dia {{ultimo_data}}
+<span class="badge rounded-pill text-bg-dark" style="font-size: 24px;">
+    <center>{{ultimo_operador}} adicionou cal pela última vez no dia {{ultimo_data}}</center>
 </span>
+
+
 <br><br>
 <center>
-    <h6>
-
-        <font color="blue">DigitalSQL<br>acesse: www.digitalsql.com.br</font>
-
-    </h6>
+        <div class="card">
+            <div class="card-body">
+                <font color="blue"><b>Descrição do dia: {{ descricao_agora }},  temperatura: {{ temperatura_html }}</b></font>
+            </div>
+        </div>
 </center>
-
-
     </div>
+
+
 
   </div>
 </div>
