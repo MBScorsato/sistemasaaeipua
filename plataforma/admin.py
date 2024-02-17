@@ -23,21 +23,6 @@ class Analise_Agua_brutadaAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context=extra_context)
 
 
-class Estoque_CalAdmin(admin.ModelAdmin):
-    list_display = ('data', 'cal_quilo')
-
-    def changelist_view(self, request, extra_context=None):
-        activate('America/Sao_Paulo')
-        return super().changelist_view(request, extra_context=extra_context)
-
-
-class Cal_QuantidadeAdmin(admin.ModelAdmin):
-    list_display = ('quantidade', 'operador', 'data', 'relatorio')
-
-    def changelist_view(self, request, extra_context=None):
-        activate('America/Sao_Paulo')
-        return super().changelist_view(request, extra_context=extra_context)
-
 
 # Registre o modelo e o admin
 admin.site.register(Analise_Agua_tratada, Analise_Agua_tratadaAdmin)
