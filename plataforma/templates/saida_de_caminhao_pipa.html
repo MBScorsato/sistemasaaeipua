@@ -4,7 +4,6 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
     <link rel="stylesheet" href="{% static 'plataforma/css/inputs.css' %}">
-
 {% endblock %}
 
 {% block titulo %}
@@ -18,32 +17,37 @@
 {% endblock %}
 
 {% block body %}
-<br>
-<div class="message">
-    {% if messages %}
-                                {% for message in messages %}
-                                    <div class="alert {{message.tags}}">
-                                        <center>{{message}}</center>
-                                    </div>
-                                {% endfor %}
-                                {% endif %}</div>
+    <br>
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}}">
+                    <center>{{message}}</center>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
-<div class="card">
-  <div class="card-body">
-     <form action="{% url 'saida_de_caminhao_pipa' %}" method="post">{% csrf_token %}
-     <center>
-         <label class="lbl_cloro">Placa</label> <input type="text" name="placa" placeholder="Placa">
-         <label class="lbl_ph">Motorista</label> <input type="text" name="motorista" placeholder="Motorista">
-         <label class="lbl_cor">Quantidade</label> <input type="text" name="quantidade" placeholder="00">
-        <label class="lbl_turbidez">Destino</label> <input type="text" name="destino" placeholder="Destino">
-         <br><br>
-         <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio"></textarea>
-         <br><br>
-        <button type="submit" class="btn btn-success">Salvar</button>
-     </center>
-     </form>
-  </div>
-</div>
+    <div class="card">
+        <div class="card-body">
+            <form id="formulario" action="{% url 'saida_de_caminhao_pipa' %}" method="post">{% csrf_token %}
+                <center>
+                    <label class="lbl_cloro">Placa</label> <input type="text" name="placa" placeholder="Placa">
+                    <label class="lbl_ph">Motorista</label> <input type="text" name="motorista" placeholder="Motorista">
+                    <label class="lbl_cor">Quantidade</label> <input type="text" name="quantidade" placeholder="00">
+                    <label class="lbl_turbidez">Destino</label> <input type="text" name="destino" placeholder="Destino">
+                    <br><br>
+                    <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio"></textarea>
+                    <br><br>
+                    <button type="submit" id="salvar" class="btn btn-success">Salvar</button>
+                </center>
+            </form>
+        </div>
+    </div>
 
-
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function() {
+            document.getElementById("salvar").disabled = true; // Desabilita o botão de envio após o primeiro clique
+        });
+    </script>
 {% endblock %}

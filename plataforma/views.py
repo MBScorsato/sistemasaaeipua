@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from plataforma.models import Analise_Agua_tratada, Analise_Agua_bruta, OperadoresAviso, Parametro, Tabela_estoque_cal, \
     Cal_Quantidade, Hidrometro, SaidaCaminhaPipa, Mensagem
-from django.contrib.auth.models import User
 
 
 # Def é a principal, depois de logar cai nesta def
@@ -143,6 +142,7 @@ def agua_tratada(request):
 
         # Tente salvar no banco
         try:
+
             analise_diaria = Analise_Agua_tratada(
                 cloro=float(cloro),
                 ph=float(ph),

@@ -13,8 +13,6 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
-from io import BytesIO
 
 
 # esta função aplica se para calcular a diferença de cal em horas

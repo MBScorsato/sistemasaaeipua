@@ -4,7 +4,6 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'plataforma/css/plataforma.css' %}">
     <link rel="stylesheet" href="{% static 'plataforma/css/inputs.css' %}">
-
 {% endblock %}
 
 {% block titulo %}
@@ -18,45 +17,47 @@
 {% endblock %}
 
 {% block body %}
-<br>
-<form action="{% url 'adicao_de_cal' %}" method="post">{% csrf_token %}
-<div class="d-grid gap-2">
-  <button class="btn btn-primary" type="submit">
-    + + Click aqui se você adicionou um saco de CAL no revervatório + +
-  </button>
-<br>
-</div>
-    <center>
-        <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio"></textarea>
-    </center>
-</form>
-<hr>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-7">
-      <!-- Conteúdo da coluna 1 --><br>
-        {% for item in resultados_divididos %}
-        <label class="quantidade">Quantidade de saco de cal no estóque:
-        </label><b><label class="quantidade_numero"> {{ item }} </label></b>
-        {% endfor %}
-    </div>
-    <div class="col-md-5">
-      <!-- Conteúdo da coluna 2 -->
-        <label class="quantidade">Quantidade de quilos<br> totais de cal no estóque:
-        </label><b><label class="quantidade_numero"> {{ quilos_cal }} </label></b>
-    </div>
-  </div>
-</div>
-
-
-
-<div class="message">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {{message.tags}}">
-                <center>{{message}}</center>
+    <br>
+    <form action="{% url 'adicao_de_cal' %}" method="post" id="formulario">{% csrf_token %}
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit" id="salvar">
+                + + Click aqui se você adicionou um saco de CAL no revervatório + +
+            </button>
+            <br>
+        </div>
+        <center>
+            <textarea cols="80" rows="5" placeholder="Relatório" name="relatorio"></textarea>
+        </center>
+    </form>
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-7">
+                <!-- Conteúdo da coluna 1 --><br>
+                {% for item in resultados_divididos %}
+                    <label class="quantidade">Quantidade de saco de cal no estóque:</label><b><label class="quantidade_numero"> {{ item }} </label></b>
+                {% endfor %}
             </div>
-        {% endfor %}
-    {% endif %}
-</div>
+            <div class="col-md-5">
+                <!-- Conteúdo da coluna 2 -->
+                <label class="quantidade">Quantidade de quilos<br> totais de cal no estóque:</label><b><label class="quantidade_numero"> {{ quilos_cal }} </label></b>
+            </div>
+        </div>
+    </div>
+
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}}">
+                    <center>{{message}}</center>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function() {
+            document.getElementById("salvar").disabled = true; // Desabilita o botão após o envio do formulário
+        });
+    </script>
 {% endblock %}
