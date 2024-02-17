@@ -114,23 +114,6 @@ class Tabela_estoque_cal(models.Model):
         return str(self.resultado_final)
 
 
-class Estoque_Cal(models.Model):
-    cal_quilo = models.IntegerField()
-    data = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        # Formatando a data no padrão "dia/mês/ano horas:minutos"
-        data_hora_formatada = self.data.strftime("%d/%m/%Y %H:%M")
-        return f"Estoque carregado - Data/Hora: {data_hora_formatada}"
-
-
-class Tabela_estoque_cal(models.Model):
-    resultado_final = models.IntegerField(default=0)
-
-    def __str__(self):
-        return str(self.resultado_final)
-
-
 @receiver(post_save, sender=Estoque_Cal)
 def atualizar_tabela_estoque_cal(sender, instance, created, **kwargs):
     if created:
