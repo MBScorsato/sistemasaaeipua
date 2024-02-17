@@ -6,8 +6,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
-from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
-    Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
+from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, Organiza_tarefa
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
 from django.utils import timezone
 from django.shortcuts import render, redirect
@@ -278,7 +277,7 @@ def laboratorio(request):
 @login_required(login_url='operadores')
 def analises_basica_interna(request):
     if request.method == 'GET':
-        informativo = Informacoes_Analises_Basicas_Interna.objects.all()
+        informativo = "nada"
         return render(request, 'analises_basica_interna.html', {'informativo': informativo}, )
 
     if request.method == 'POST':
