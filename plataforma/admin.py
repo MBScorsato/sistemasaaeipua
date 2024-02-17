@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.utils.timezone import activate
-from .models import Analise_Agua_tratada, Analise_Agua_bruta, Parametro, Cal_Quantidade, Estoque_Cal, \
-    Tabela_estoque_cal, Hidrometro, SaidaCaminhaPipa, Mensagem, Laboratorio
-
+from .models import Analise_Agua_tratada, Analise_Agua_bruta, Parametro, Hidrometro, SaidaCaminhaPipa, Mensagem, Laboratorio
 
 class Analise_Agua_tratadaAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'cloro', 'ph', 'fluor', 'cor', 'turbidez', 'data_analise_agua', 'relatorio')
@@ -21,7 +19,6 @@ class Analise_Agua_brutadaAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         activate('America/Sao_Paulo')
         return super().changelist_view(request, extra_context=extra_context)
-
 
 
 # Registre o modelo e o admin
