@@ -114,39 +114,6 @@ class Tabela_estoque_cal(models.Model):
         return str(self.resultado_final)
 
 
-class Estoque_Cal(models.Model):
-    cal_quilo = models.IntegerField()
-    data = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        # Formatando a data no padrão "dia/mês/ano horas:minutos"
-        data_hora_formatada = self.data.strftime("%d/%m/%Y %H:%M")
-        return f"Estoque carregado - Data/Hora: {data_hora_formatada}"
-
-
-class Tabela_estoque_cal(models.Model):
-    resultado_final = models.IntegerField(default=0)
-
-    def __str__(self):
-        return str(self.resultado_final)
-
-
-@receiver(post_save, sender=Estoque_Cal)
-def atualizar_tabela_estoque_cal(sender, instance, created, **kwargs):
-    if created:
-        # Obtendo o objeto Tabela_estoque_cal
-        tabela_estoque_cal = Tabela_estoque_cal.objects.first()
-
-        # Verificando se há algum objeto Tabela_estoque_cal no banco de dados
-        if tabela_estoque_cal:
-            # Somando o valor cal_quilo do Estoque_Cal com o resultado_final da Tabela_estoque_cal
-            tabela_estoque_cal.resultado_final += instance.cal_quilo
-            tabela_estoque_cal.save()
-        else:
-            # Caso não haja objeto Tabela_estoque_cal no banco de dados, criamos um novo
-            Tabela_estoque_cal.objects.create(resultado_final=instance.cal_quilo)
-
-
 class Hidrometro(models.Model):
     data = models.DateTimeField(default=timezone.now)
     operador = models.ForeignKey(User, on_delete=models.CASCADE)
