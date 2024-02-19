@@ -1,4 +1,6 @@
 import datetime
+
+import requests
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -6,8 +8,6 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from plataforma.models import Analise_Agua_tratada, Analise_Agua_bruta, OperadoresAviso, Parametro, Tabela_estoque_cal, \
     Cal_Quantidade, Hidrometro, SaidaCaminhaPipa, Mensagem
-from django.contrib.auth.models import User
-
 
 # Def é a principal, depois de logar cai nesta def
 @login_required(login_url='operadores')
@@ -53,6 +53,17 @@ def plataforma(request):
         else:
             ultimo_data = '???'
 
+        # API clima agora
+        API_KEY = "88b9a728f6d07c27fd1e204ce3237cc7"
+        link_agora = f"https://api.openweathermap.org/data/2.5/weather?lat=-20.438&lon=-48.012&appid={API_KEY}&lang=pt_br"
+        link_futuro = f"https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=44.34&lon=10.99&appid={API_KEY}"
+
+        requisicao_agora = requests.get(link_agora)
+        requisicao_dic_agora = requisicao_agora.json()
+        descricao_agora = requisicao_dic_agora['weather'][0]['description']
+        temperatura = requisicao_dic_agora['main']['temp'] - 273.15
+        temperatura_html = f'{temperatura:.2f}°C'
+
         if len(avisos) > 0:
             return render(request, 'plataforma.html', {'nome': nome,
                                                        'agua_tratada_grafico_vetor': agua_tratada_grafico_vetor,
@@ -61,9 +72,11 @@ def plataforma(request):
                                                        'ultimo_operador': ultimo_operador,
                                                        'ultimo_data': ultimo_data,
                                                        'esta_autorizado': esta_autorizado,
+                                                       'descricao_agora': descricao_agora,
+                                                       'temperatura_html': temperatura_html,
 
                                                        })
-
+        # sem avisos
         return render(request, 'plataforma.html', {'nome': nome,
                                                    'agua_tratada_grafico_vetor': agua_tratada_grafico_vetor,
                                                    'parametro': parametro,
