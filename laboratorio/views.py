@@ -725,6 +725,14 @@ def pdf_relatorio(request, pk):
 
 
 @login_required(login_url='operadores')
+def index_relatorio(request):
+    if request.method == 'GET':
+        return render(request, 'index_relatorio.html')
+    elif request.method == 'POST':
+        return render(request, 'index_relatorio.html')
+
+
+@login_required(login_url='operadores')
 def cadastro_patrimonio(request):
     if request.method == 'GET':
         return render(request, 'cadastro_patrimonio.html')
