@@ -1,6 +1,6 @@
 /* Estilo para o corpo da página */
 body {
-    background-image: linear-gradient(55deg, #B0E0E6, #ffffff);
+    background-image: linear-gradient(70deg, black, #ffffff);
 }
 
 /* Estilo para todos os inputs do tipo "number" e "text" */

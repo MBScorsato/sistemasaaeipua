@@ -4,35 +4,35 @@
 {% block body %}
     <center>
     <div class="card">
-        <div class="card-body">
+        <div class="card-body"><br><br>
             <h1><b>Controle operacioal</b></h1>
     </div>
     </div>
     </center>
 {% endblock %}
-{% block input %}<br><br>
-        <div class="message">
-            {% if messages %}
-            {% for message in messages %}
-        <div class="alert {{message.tags}}">
-            <center>{{message}}</center>
-        </div>
-            {% endfor %}
-            {% endif %}
-        </div>
+{% block input %}
+        </div><br>
                <center> <form method="post" action="{% url 'controle_operacional' %}">{% csrf_token %}
-                   <b> PRÉ-Cloro:</b>
+                   <b> <font color="#ffffff">PRÉ-Cloro:</font></b>
                     <input type="number" step="any" name="pre_cloro" placeholder="0.00">
-                    <b> Cloro Estação:</b>
+                   <b> <font color="#ffffff">Cloro Estação:</font></b>
                     <input type="number" step="any" name="cloro_estacao" placeholder="0.00">
-                    <b> Fluor:</b>
+                   <b> <font color="#ffffff">Fluor:</font></b>
                     <input type="number" step="any" name="fluor" placeholder="0.00">
-                    <b> Turbidez estação:</b>
+                   <b> <font color="#ffffff">Turbidez estação:</font></b>
                     <input type="number" step="any" name="turbidez_estacao" placeholder="0.00"><br><br>
                     <textarea cols="60" rows="5" placeholder="Relatório" name="relatorio"></textarea><br><br>
                     <input type="submit" value="Salvar" name="btn-form">
                </form></center>
 <br><br>
-
 <hr>
+
+        <div class="message">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            <center>{{message}}</center>
+        </div></div>
+            {% endfor %}
+            {% endif %}
 {% endblock %}

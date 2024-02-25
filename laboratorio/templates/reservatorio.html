@@ -4,32 +4,24 @@
 {% block body %}
     <center>
     <div class="card">
-        <div class="card-body">
-            <h1><b>Reservatório</b></h1>
+        <div class="card-body"><br><br>
+            <h1><b>Reservatórios</b></h1>
     </div>
     </div>
     </center>
 {% endblock %}
 {% block input %}<br><br>
-        <div class="message">
-            {% if messages %}
-            {% for message in messages %}
-        <div class="alert {{message.tags}}">
-            <center>{{message}}</center>
-        </div>
-            {% endfor %}
-            {% endif %}
-        </div>
+
                <center> <form method="post" action="{% url 'reservatorio' %}">{% csrf_token %}
-                   <b> Cloro:</b>
+                   <b> <font color="#ffffff">Cloro:</font></b>
                     <input type="number" step="any" name="cloro_reservatorio" placeholder="0.00">
-                    <b> pH:</b>
+                   <b> <font color="#ffffff">pH:</font></b>
                     <input type="number" step="any" name="ph_reservatorio" placeholder="0.00">
-                    <b> Fluor:</b>
+                   <b> <font color="#ffffff">Fluor:</font></b>
                     <input type="number" step="any" name="fluor_reservatorio" placeholder="0.00">
-                    <b> Turbidez:</b>
+                   <b> <font color="#ffffff">Turbidez:</font></b>
                     <input type="number" step="any" name="turbidez_reservatorio" placeholder="0.00">
-<label for="reservatorios"><b>Reservatório:</b></label>
+                   <label for="reservatorios"><b><font color="#ffffff">Reservatório:</font></b></label>
 <select name="reservatorios" id="reservatorios">
     {% for reservatorio in reservatorios %}
         <option value="{{ reservatorio.id }}">{{ reservatorio.reservatorio_cadastrado }}</option>
@@ -44,4 +36,5 @@
 
 {% endfor %}
 <br><br><hr>
+
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block body %}
     <center>
     <div class="card">
-        <div class="card-body">
+        <div class="card-body"><br><br>
             <h1><b>Anotações Gerais</b></h1>
     </div>
     </div>
@@ -14,9 +14,17 @@
 {% endblock %}
 
 
-{% block input %}<br><br>
-
-        <div class="message">
+{% block input %}<
+<center>
+    <form action="{% url 'anotacoes_gerais' %}" method="post">{% csrf_token %}
+        <b><font color="#ffffff">Título</font></b> <input type="text" name="titulo" placeholder="título" style="width: 300px;">
+        <br><br>
+        <b><font color="#ffffff">Nota:</font></b> <textarea cols="80" rows="6" placeholder="Anotação" name="nota"></textarea>
+        <br><br>
+        <input type="submit" value="Anotar">
+    </form>
+</center><br>
+      <div class="message">
             {% if messages %}
             {% for message in messages %}
         <div class="alert {{message.tags}}">
@@ -25,13 +33,4 @@
             {% endfor %}
             {% endif %}
         </div>
-<center>
-    <form action="{% url 'anotacoes_gerais' %}" method="post">{% csrf_token %}
-        <b>Título</b> <input type="text" name="titulo" placeholder="título" style="width: 300px;">
-        <br><br>
-        <b>Nota:</b> <textarea cols="80" rows="6" placeholder="Anotação" name="nota"></textarea>
-        <br><br>
-        <input type="submit" value="Anotar">
-    </form>
-</center>
 {% endblock %}

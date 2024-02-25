@@ -6,22 +6,14 @@
 {% block body %}
     <center>
         <div class="card">
-            <div class="card-body">
+            <div class="card-body"><br><br>
                 <h1><b>Organizador de Tarefas</b></h1>
             </div>
         </div>
     </center>
 {% endblock %}
 {% block input %}
-    <br>
-    <div class="message">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{message.tags}}">
-                    <center>{{message}}</center>
-                </div>
-            {% endfor %}
-        {% endif %}
+
         <div class="container mt-4">
             <div class="card">
                 <div class="card-body">
@@ -32,7 +24,7 @@
                     </a></h5>
                     <form method="post">
                         {% csrf_token %}
-                        <br>
+
                         <label><b>Selecione uma data:</b></label>
                         <input type="date" name="data_selecionada">
                         <div class="container mt-4">
@@ -56,6 +48,14 @@
             </div>
         </div>
     </div>
-    <br><br>
-    <hr>
+  <br>
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}}">
+                    <center>{{message}}</center>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 {% endblock %}

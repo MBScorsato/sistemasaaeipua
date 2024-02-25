@@ -4,7 +4,7 @@
 {% block body %}
     <center>
 <div class="card">
-  <div class="card-body">
+  <div class="card-body"><br><br>
       <h1><b>Análises básica interna</b></h1>
 
   </div>
@@ -13,16 +13,17 @@
 {% endblock %}
 {% block input %}
 <br>
+    {% if not informativo %}
+            <div class="alert alert-secondary" role="alert">
+            <font color="red" size="6" face="verdana">Sem mensagens...</font></div>
+    {% endif %}
     {% for info in informativo %}
-
 <center>
-<div class="card" style="width: 50rem;">
-  <div class="card-body">
-    <p class="card-text">
-        <b><font color="red">{{ info.informativo }}</font></b>
-    </p>
-  </div>
-</div><br>
+        <div class="alert alert-secondary" role="alert">
+            <font color="brown" face="verdana" size="4">{{ info.informativo }}</font>
+</div>
 </center>
+
     {% endfor %}
+
 {% endblock %}

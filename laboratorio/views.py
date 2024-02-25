@@ -733,11 +733,11 @@ def index_relatorio(request):
 
 
 @login_required(login_url='operadores')
-def cadastro_patrimonio(request):
+def patrimonio_cadastrado(request):
     if request.method == 'GET':
-        return render(request, 'cadastro_patrimonio.html')
+        return render(request, 'patrimonio_cadastrado.html')
     elif request.method == 'POST':
-        return render(request, 'cadastro_patrimonio.html')
+        return render(request, 'patrimonio_cadastrado.html')
 
 
 # sair do sistema
