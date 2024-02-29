@@ -536,24 +536,23 @@ def tarefas_aberta(request):
         # Se a solicitação for GET, a variável lembretes_pendentes é atualizada com as tarefas abertas
         lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
 
-        return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
-                                                       })
-
     elif request.method == 'POST':
-        tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
+        if 'pro_titulo' in request.POST:
+           pass
 
-        # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
-        tarefa = get_object_or_404(Organiza_tarefa, pk=tarefa_id)
+        elif 'delete_tarefa' in request.POST:
+            tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
 
-        # Remove a tarefa
-        tarefa.delete()
+            # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
+            tarefa = get_object_or_404(Organiza_tarefa, pk=tarefa_id)
 
-        # Atualiza a lista de tarefas abertas
-        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+            # Remove a tarefa
+            tarefa.delete()
 
-    return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
+            # Atualiza a lista de tarefas abertas
+            lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
 
-                                                       })
+    return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes})
 
 
 @login_required(login_url='operadores')
@@ -638,14 +637,13 @@ def relatorios(request):
         nome_relatorio_pesquisa = request.POST.get('nome_pesquisa').strip()
         mensagem_pesquisa = ''
         try:
-            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by(
-                '-id')
+            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by('-id')
         except:
             mensagem_pesquisa = 'PRESS F5, e tente outra vez!'
         if not busca_titulo:
             mensagem_pesquisa = 'Sem resultado para a sua busca'
         return render(request, 'relatorios.html', {'busca_titulo': busca_titulo,
-                                                   'mensagem_pesquisa': mensagem_pesquisa,
+                                                    'mensagem_pesquisa': mensagem_pesquisa,
                                                    })
 
 
