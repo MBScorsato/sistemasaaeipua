@@ -1,40 +1,37 @@
 {% extends 'base2.html' %}
 {% load static %}
-{% block title%}Tarefas em Aberto{% endblock %}
+{% block title %}Tarefas em Aberto{% endblock %}
 {% block body %}
 <center xmlns="http://www.w3.org/1999/html">
     <div class="card">
         <div class="card-body"><br><br>
             <h1><b>Tarefas em Aberto</b></h1>
-
+        </div>
     </div>
-    </div>
-    </center>
-{% endblock %}
-{% block input %}<br>
+</center>
+<br>
 
-<nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-  <form class="d-flex" role="search" action="" method="post">{% csrf_token %}
-      <input class="form-control me-1" type="search" placeholder=" Digite parte do lembrete . . . " aria-label="Search" name="pro_titulo">
-      <button class="btn btn-outline-success" type="submit">Procurar</button>
-    </form>
-  </div>
-</nav>
+{% if lembretes_pendentes %}
+    {% for item in lembretes_pendentes %}
+        <div class="card">
+            <div class="card-body">
+                <p><b>Data da Tarefa: {{ item.data_selecionada|date:"d/m/Y" }}</b></p>
+                <p>Tarefa: {{ item.lembrete }}</p>
+                <p>Usuário: {{ item.usuario }} - Cod. da Tarefa: {{ item.id }}</p>
+                <form action="{% url 'tarefas_aberta' %}" method="post">{% csrf_token %}
+                    <input type="hidden" name="id_lembrete" value="{{ item.id }}">
+                    <input type="submit" value="Finalizar tarefa" name="delete_tarefa">
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+<center><i>Não há tarefas pendentes.</i></center>
+{% endif %}
 
-{% for item in lembretes_pendentes %}<div class="card">
-  <div class="card-body">
-    <p><b>Data da Tarefa: {{ item.data_selecionada|date:"d/m/Y" }}</b></p>
-            <p>Tarefa: {{ item.lembrete }}</p>
-            <p>Usuário: {{ item.usuario }} - Cod. da Tarefa: {{ item.id }}</p>
-            <form action="{% url 'tarefas_aberta' %}" method="post">{% csrf_token %}
-                <input type="hidden" name="id_lembrete" value="{{ item.id }}">
-                <input type="submit" value="Finalizar tarefa">
-            </form>
-  </div>
-</div>
 
-{% endfor %}
+
+
+
 <br><br>
 {% endblock %}
-        </div>

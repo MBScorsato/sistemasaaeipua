@@ -523,20 +523,23 @@ def organizador_tarefas(request):
 
 
 # esta função esta ligada ou seja é filha da função 'def analises_basica_interna' ou 'def organizador_tarefas'
-# existem doi caminhos para esa view, a primeira é através do html: organizador_tarefas.html a senga forma
+# existem dois caminhos para essa view, a primeira é através do html: organizador_tarefas.html a sengunda forma
 # é quando existe uma tarefa para realizar no dia que aparecerá na aba laboratorio.html um borão ou link
 # para ser clicado e ai sim ler e marcar como tarefa feita, ou não caso não tenha feio ainda
 # ela é responsavel por pesquisar e se preciso resolvar as tarefas abertas pelos operadoes ou tecnicos que tem
 # a autorização de adrentar na aba 'Laboratório'
 @login_required(login_url='operadores')
 def tarefas_aberta(request):
-    if request.method == 'GET':
-        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
-        # print(lembretes_pendentes)
-        return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
+    lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
 
+    if request.method == 'GET':
+        # Se a solicitação for GET, a variável lembretes_pendentes é atualizada com as tarefas abertas
+        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+
+        return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
                                                        })
-    if request.method == 'POST':
+
+    elif request.method == 'POST':
         tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
 
         # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
@@ -545,9 +548,12 @@ def tarefas_aberta(request):
         # Remove a tarefa
         tarefa.delete()
 
-        # obter e exibir as tarefas abertas continua aqui
+        # Atualiza a lista de tarefas abertas
         lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
-    return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes})
+
+    return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
+
+                                                       })
 
 
 @login_required(login_url='operadores')
@@ -632,13 +638,14 @@ def relatorios(request):
         nome_relatorio_pesquisa = request.POST.get('nome_pesquisa').strip()
         mensagem_pesquisa = ''
         try:
-            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by('-id')
+            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by(
+                '-id')
         except:
             mensagem_pesquisa = 'PRESS F5, e tente outra vez!'
         if not busca_titulo:
             mensagem_pesquisa = 'Sem resultado para a sua busca'
         return render(request, 'relatorios.html', {'busca_titulo': busca_titulo,
-                                                    'mensagem_pesquisa': mensagem_pesquisa,
+                                                   'mensagem_pesquisa': mensagem_pesquisa,
                                                    })
 
 
