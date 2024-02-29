@@ -523,30 +523,35 @@ def organizador_tarefas(request):
 
 
 # esta função esta ligada ou seja é filha da função 'def analises_basica_interna' ou 'def organizador_tarefas'
-# existem doi caminhos para esa view, a primeira é através do html: organizador_tarefas.html a senga forma
+# existem dois caminhos para essa view, a primeira é através do html: organizador_tarefas.html a sengunda forma
 # é quando existe uma tarefa para realizar no dia que aparecerá na aba laboratorio.html um borão ou link
 # para ser clicado e ai sim ler e marcar como tarefa feita, ou não caso não tenha feio ainda
 # ela é responsavel por pesquisar e se preciso resolvar as tarefas abertas pelos operadoes ou tecnicos que tem
 # a autorização de adrentar na aba 'Laboratório'
 @login_required(login_url='operadores')
 def tarefas_aberta(request):
+    lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+
     if request.method == 'GET':
+        # Se a solicitação for GET, a variável lembretes_pendentes é atualizada com as tarefas abertas
         lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
-        # print(lembretes_pendentes)
-        return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes,
 
-                                                       })
-    if request.method == 'POST':
-        tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
+    elif request.method == 'POST':
+        if 'pro_titulo' in request.POST:
+           pass
 
-        # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
-        tarefa = get_object_or_404(Organiza_tarefa, pk=tarefa_id)
+        elif 'delete_tarefa' in request.POST:
+            tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
 
-        # Remove a tarefa
-        tarefa.delete()
+            # Obtém o objeto Organiza_tarefa correspondente ao ID recebido
+            tarefa = get_object_or_404(Organiza_tarefa, pk=tarefa_id)
 
-        # obter e exibir as tarefas abertas continua aqui
-        lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+            # Remove a tarefa
+            tarefa.delete()
+
+            # Atualiza a lista de tarefas abertas
+            lembretes_pendentes = Organiza_tarefa.objects.filter(concluido=False)
+
     return render(request, 'tarefas_aberto.html', {'lembretes_pendentes': lembretes_pendentes})
 
 
