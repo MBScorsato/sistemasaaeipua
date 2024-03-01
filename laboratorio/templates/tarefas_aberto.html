@@ -13,15 +13,6 @@
 {% endblock %}
 {% block input %}<br>
 
-<nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-  <form class="d-flex" role="search" action="{% url 'tarefas_aberta' %}" method="post">{% csrf_token %}
-      <input class="form-control me-1" type="search" placeholder=" Digite parte do lembrete . . . " aria-label="Search" name="pro_titulo">
-      <button class="btn btn-outline-success" type="submit" name="btn_veja_tarefas">Procurar</button>
-    </form>
-  </div>
-</nav>
-{{a}}
 {% for item in lembretes_pendentes %}<div class="card">
   <div class="card-body">
     <p><b>Data da Tarefa: {{ item.data_selecionada|date:"d/m/Y" }}</b></p>
