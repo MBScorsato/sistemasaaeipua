@@ -39,10 +39,18 @@
   </div>
 </div><br><br>
 
+{% if divisao_zero %}
+    <center><font color="yellow" face="verdana" size="5">(ZeroDivisionError) | ERRO! Divisão por Zero</font></center>
+{% endif %}
+{% if mensagem_erro %}
+    <center><font color="yellow" face="verdana" size="5">{{ mensagem_erro }}</font></center>}
+{% endif %}
+
 {% if raiz1 %}
     <div class="card border-danger mb-3" style="max-width: 18rem;">
       <div class="card-body text-danger">
-        <h5 class="card-title">As raízes são</h5>
+        <h5 class="card-title">As raízes são </h5>
+
         <p>Raiz 1: {{ raiz1.real|floatformat:3 }}{% if raiz1.imag != 0 %}{{ "+" }}{{ raiz1.imag|floatformat:3 }}i{% endif %}</p>
         <p>Raiz 2: {{ raiz2.real|floatformat:3 }}{% if raiz2.imag != 0 %}{{ "+" }}{{ raiz2.imag|floatformat:3 }}i{% endif %}</p>
 

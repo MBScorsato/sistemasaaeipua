@@ -398,21 +398,33 @@ def calculadora(request):
     if request.method == 'GET':
         return render(request, 'calculadora.html')
     elif request.method == 'POST':
+        a = request.POST.get('a')
+        b = request.POST.get('b')
+        c = request.POST.get('c')
 
-        # bhaskara
-        a = float(request.POST.get('a'))
-        b = float(request.POST.get('b'))
-        c = float(request.POST.get('c'))
+        if a is None or b is None or c is None:
+            mensagem_erro = 'É necessário fornecer valores para a, b e c.'
+            return render(request, 'calculadora.html', {'mensagem_erro': mensagem_erro})
 
-        discriminante = (b ** 2) - (4 * a * c)
+        try:
+            a = float(a)
+            b = float(b)
+            c = float(c)
 
-        # Calcula as raízes
-        raiz1 = (-b + cmath.sqrt(discriminante)) / (2 * a)
-        raiz2 = (-b - cmath.sqrt(discriminante)) / (2 * a)
+            discriminante = (b ** 2) - (4 * a * c)
 
-        return render(request, 'calculadora.html', {'raiz1': raiz1,
-                                                    'raiz2': raiz2})
+            raiz1 = (-b + cmath.sqrt(discriminante)) / (2 * a)
+            raiz2 = (-b - cmath.sqrt(discriminante)) / (2 * a)
 
+            return render(request, 'calculadora.html', {'raiz1': raiz1, 'raiz2': raiz2})
+
+        except ZeroDivisionError:
+            divisao_zero = 'Divisão por zero'
+            return render(request, 'calculadora.html', {'divisao_zero': divisao_zero})
+
+        except ValueError:
+            mensagem_erro = 'Entrada inválida. Certifique-se de inserir valores numéricos para a, b e c.'
+            return render(request, 'calculadora.html', {'mensagem_erro': mensagem_erro})
 
 # esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
 # ela é responsavel por gravar as anotaçoes feitas pelos operadoes ou tecnicos que tem
@@ -538,7 +550,7 @@ def tarefas_aberta(request):
 
     elif request.method == 'POST':
         if 'pro_titulo' in request.POST:
-           pass
+            pass
 
         elif 'delete_tarefa' in request.POST:
             tarefa_id = request.POST.get('id_lembrete')  # Obtém o ID da tarefa enviado pelo formulário
@@ -609,7 +621,7 @@ def residencias(request):
                 observacao='Nada consta'
             )
             salva_dados_residencia.save()
-            messages.success(request, 'Dados preenchidos corretamente')
+            messages.success(request, 'Dado salvo corretamente')
 
         except:
             messages.warning(request, 'Erro interno do sistema. Tente novamente.')
@@ -637,13 +649,14 @@ def relatorios(request):
         nome_relatorio_pesquisa = request.POST.get('nome_pesquisa').strip()
         mensagem_pesquisa = ''
         try:
-            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by('-id')
+            busca_titulo = Banco_Reservatorio_temporal.objects.filter(nome__contains=nome_relatorio_pesquisa).order_by(
+                '-id')
         except:
             mensagem_pesquisa = 'PRESS F5, e tente outra vez!'
         if not busca_titulo:
             mensagem_pesquisa = 'Sem resultado para a sua busca'
         return render(request, 'relatorios.html', {'busca_titulo': busca_titulo,
-                                                    'mensagem_pesquisa': mensagem_pesquisa,
+                                                   'mensagem_pesquisa': mensagem_pesquisa,
                                                    })
 
 
