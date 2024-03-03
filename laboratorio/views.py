@@ -426,6 +426,7 @@ def calculadora(request):
             mensagem_erro = 'Entrada inválida. Certifique-se de inserir valores numéricos para a, b e c.'
             return render(request, 'calculadora.html', {'mensagem_erro': mensagem_erro})
 
+
 # esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
 # ela é responsavel por gravar as anotaçoes feitas pelos operadoes ou tecnicos que tem
 # a autorização de adrentar na aba 'Laboratório'
@@ -642,8 +643,8 @@ def relatorios(request):
         if len(mosta_analise) <= 0:
             nota = 'Não existe análises em aberto'
 
-        return render(request, 'relatorios.html', {'mosta_analise': mosta_analise,
-                                                   'nota': nota, })
+        return render(request, 'relatorio_analises_externas.html', {'mosta_analise': mosta_analise,
+                                                                    'nota': nota, })
 
     elif request.method == 'POST':
         nome_relatorio_pesquisa = request.POST.get('nome_pesquisa').strip()
@@ -655,9 +656,9 @@ def relatorios(request):
             mensagem_pesquisa = 'PRESS F5, e tente outra vez!'
         if not busca_titulo:
             mensagem_pesquisa = 'Sem resultado para a sua busca'
-        return render(request, 'relatorios.html', {'busca_titulo': busca_titulo,
-                                                   'mensagem_pesquisa': mensagem_pesquisa,
-                                                   })
+        return render(request, 'relatorio_analises_externas.html', {'busca_titulo': busca_titulo,
+                                                                    'mensagem_pesquisa': mensagem_pesquisa,
+                                                                    })
 
 
 @login_required(login_url='operadores')
