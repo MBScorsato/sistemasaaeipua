@@ -1,5 +1,4 @@
 import datetime
-
 import requests
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required

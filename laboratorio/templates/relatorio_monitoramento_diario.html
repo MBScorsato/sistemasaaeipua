@@ -1,0 +1,32 @@
+{% extends 'base3.html' %}
+{% load static %}
+
+{% block title %}
+    Relatórios Monitoramento Diário
+{% endblock %}
+
+{% block body %}
+{% endblock %}
+
+{% block input %}
+    <center><br><br><br>
+    <font color="#000000" font="verdana" ><h2>Monitoramento Diário</h2></font>
+        <br>
+        <ul class="list-group list-group-flush"><b><font color="#00ffff">Total de Analises da estação: {{ cont }}</font></b></ul>
+        <br>
+{% for data, analises in pdf_analise_agua_por_data.items %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title"><font color="blue" face="verdana">{{ data }}</font></h5>
+        <form action="{% url 'monitoramento_diario' %}" method="post">{% csrf_token %}
+            <input type="hidden" name="data" value="{{ data }}">
+            <input type="hidden" name="analise_ids" value="{% for analise in analises %}{{ analise.pk }},{% endfor %}">
+            <input type="submit" value="PDF">
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+    </center>
+
+{% endblock %}

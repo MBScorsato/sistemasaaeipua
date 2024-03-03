@@ -14,9 +14,10 @@ urlpatterns = [
     path('laboratorio/controle/operacional/organizador/tarefas/aberta', views.tarefas_aberta, name='tarefas_aberta'),
     path('laboratorio/sair/', views.logout_view, name='logout_view'),
     path('laboratorio/residencias', views.residencias, name='residencias'),
-    path('laboratorio/relatorios', views.relatorios, name='relatorios'),
+    path('laboratorio/index_relatorio/particulares/externas', views.relatorios, name='relatorios'),
     path('laboratorio/pdf_relatorio/<int:pk>/id_pdf', views.pdf_relatorio, name='pdf_relatorio'),
     path('laboratorio/patrimonio/cadastrado/saae', views.patrimonio_cadastrado, name='patrimonio_cadastrado'),
     path('laboratorio/index_relatorio', views.index_relatorio, name='index_relatorio'),
+    path('laboratorio/index_relatorio/monitoramento/diario', views.monitoramento_diario, name='monitoramento_diario'),
 
 ]

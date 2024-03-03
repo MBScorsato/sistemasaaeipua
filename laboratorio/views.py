@@ -1,11 +1,14 @@
 import cmath
 import datetime
 import io
+from collections import defaultdict
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
     Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
@@ -754,9 +757,65 @@ def index_relatorio(request):
 @login_required(login_url='operadores')
 def patrimonio_cadastrado(request):
     if request.method == 'GET':
+
         return render(request, 'patrimonio_cadastrado.html')
     elif request.method == 'POST':
         return render(request, 'patrimonio_cadastrado.html')
+
+
+@login_required(login_url='operadores')
+def monitoramento_diario(request):
+    if request.method == 'GET':
+        pdf_analise_agua_limpa = Analise_Agua_tratada.objects.all()
+
+        # Criando um dicionário para armazenar as análises agrupadas por data completa
+        pdf_analise_agua_por_data = defaultdict(list)
+        for analise in pdf_analise_agua_limpa:
+            data_completa = analise.data_analise_agua.date()
+            pdf_analise_agua_por_data[data_completa].append(analise)
+
+        cont = len(pdf_analise_agua_limpa)
+
+        return render(request, 'relatorio_monitoramento_diario.html',
+                      {'pdf_analise_agua_por_data': dict(pdf_analise_agua_por_data), 'cont': cont})
+
+    elif request.method == 'POST':
+
+        data_do_formulario = request.POST.get('data')
+
+        # Recupera os IDs das análises do formulário como uma string
+        analise_ids_str = request.POST.get('analise_ids')
+
+        # Converte a string de IDs em uma lista de inteiros
+        analise_ids = [int(id) for id in analise_ids_str.split(',') if id]
+
+        ids_lista = []
+
+        for id_analise in analise_ids:
+            analise = Analise_Agua_tratada.objects.get(pk=id_analise)
+
+            # Adiciona o objeto à lista em vez de apenas o ID
+            ids_lista.append(analise)
+
+        # Criar PDF
+        buffer = io.BytesIO()
+        cnv = canvas.Canvas(buffer)
+
+        cnv.drawString(20, 20, "Teste")  # Adicione aqui o conteúdo que você deseja no PDF
+
+        for analise in ids_lista:
+
+            cnv.drawString(20, 20, f"Cloro: {analise.cloro}")  # Exemplo de como adicionar o atributo 'cloro' ao PDF
+
+        cnv.save()
+
+# Retornar o PDF como uma resposta HTTP
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="PDF_monitoramento_diario.pdf"'
+        response.write(buffer.getvalue())
+
+    return response
 
 
 # sair do sistema
