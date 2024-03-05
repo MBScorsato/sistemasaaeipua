@@ -823,3 +823,10 @@ def logout_view(request):
     logout(request)
     # Redirecione para onde você deseja após o logout
     return redirect('operadores')
+
+
+def monitoramento_diario(request):
+    if request.method == 'GET':
+        return render(request, 'relatorio_monitoramento_diario.html')
+    elif request.method == 'POST':
+        return render(request, 'relatorio_monitoramento_diario.html')
