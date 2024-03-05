@@ -778,7 +778,6 @@ def monitoramento_diario(request):
 
         return render(request, 'relatorio_monitoramento_diario.html',
                       {'pdf_analise_agua_por_data': dict(pdf_analise_agua_por_data), 'cont': cont})
-
     elif request.method == 'POST':
 
         data_do_formulario = request.POST.get('data')
@@ -809,7 +808,7 @@ def monitoramento_diario(request):
 
         cnv.save()
 
-# Retornar o PDF como uma resposta HTTP
+        # Retornar o PDF como uma resposta HTTP
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="PDF_monitoramento_diario.pdf"'
@@ -825,8 +824,3 @@ def logout_view(request):
     return redirect('operadores')
 
 
-def monitoramento_diario(request):
-    if request.method == 'GET':
-        return render(request, 'relatorio_monitoramento_diario.html')
-    elif request.method == 'POST':
-        return render(request, 'relatorio_monitoramento_diario.html')
