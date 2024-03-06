@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Relatórios Monitoramento Diário
+    Relatórios Eficiencia ETA
 {% endblock %}
 
 {% block body %}
@@ -10,7 +10,7 @@
 
 {% block input %}
     <center><br><br><br>
-    <font color="#000000" font="verdana" ><h2>Monitoramento Diário</h2></font>
+    <font color="#000000" font="verdana" ><h2>Eficiancia da ETa (água bruta)</h2></font>
         <br>
         <ul class="list-group list-group-flush"><font color=fff0ff>Total de Analises da estação: <b>{{ cont }}</font></b></ul>
         <br>
@@ -18,7 +18,7 @@
 <div class="card">
     <div class="card-body">
 
-        <form action="{% url 'monitoramento_diario' %}" method="post">{% csrf_token %}
+        <form action="{% url 'eficiencia_eta' %}" method="post">{% csrf_token %}
             <h6>{{ data }} <input type="submit" value="   :: IMPRIMIR PDF ::    "></h6>
             <input type="hidden" name="data" value="{{ data }}">
             <input type="hidden" name="analise_ids" value="{% for analise in analises %}{{ analise.pk }},{% endfor %}">

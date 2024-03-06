@@ -19,5 +19,6 @@ urlpatterns = [
     path('laboratorio/patrimonio/cadastrado/saae', views.patrimonio_cadastrado, name='patrimonio_cadastrado'),
     path('laboratorio/index_relatorio', views.index_relatorio, name='index_relatorio'),
     path('laboratorio/index_relatorio/monitoramento/diario', views.monitoramento_diario, name='monitoramento_diario'),
+    path('laboratorio/index_relatorio/eficiencia/eta', views.eficiencia_eta, name='eficiencia_eta'),
 
 ]

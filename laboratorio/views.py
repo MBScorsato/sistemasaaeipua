@@ -8,10 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
 
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
     Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
-from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal
+from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal, Analise_Agua_bruta
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -805,8 +806,21 @@ def monitoramento_diario(request):
         cnv.setFontSize(tamanho_fonte)
         cnv.drawString(90, 787, "Monitoramento Diário")
         tamanho_fonte = 16  # Tamanho da fonte desejado
-        cnv.setFontSize(tamanho_fonte)
-        cnv.drawString(10, 755, "Saae Ipuã-SP")  # buscar cidade no banco
+
+        estilo = getSampleStyleSheet()["Normal"]
+
+        # Configurando o estilo para negrito
+        estilo.fontName = 'Helvetica-Bold'
+
+        # Definindo o tamanho da fonte
+        estilo.fontSize = tamanho_fonte
+        # Desenhando o texto usando o estilo
+        cnv.setFont("Helvetica-Bold", tamanho_fonte)
+        cnv.drawString(10, 755, "SAAE Ipuã-SP")  # buscar cidade no banco
+
+        # Retornando ao estilo normal
+        cnv.setFont("Helvetica", tamanho_fonte)
+
         tamanho_fonte = 20  # Tamanho da fonte desejado
         cnv.setFontSize(tamanho_fonte)
         cnv.drawString(10, 730, f"{data_do_formulario}")
@@ -847,6 +861,123 @@ def monitoramento_diario(request):
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="PDF_monitoramento_diario.pdf"'
+        response.write(buffer.getvalue())
+
+    return response
+
+
+def eficiencia_eta(request):
+    if request.method == 'GET':
+        pdf_analise_agua_bruta = Analise_Agua_bruta.objects.all()
+
+        # Criando um dicionário para armazenar as análises agrupadas por data completa
+        pdf_analise_agua_por_data = defaultdict(list)
+        for analise in pdf_analise_agua_bruta:
+            data_completa = analise.data_analise_agua.date()
+            pdf_analise_agua_por_data[data_completa].append(analise)
+
+        cont = len(pdf_analise_agua_bruta)
+
+        return render(request, 'eficiencia_eta.html',
+                      {'pdf_analise_agua_por_data': dict(pdf_analise_agua_por_data), 'cont': cont})
+
+    elif request.method == 'POST':
+        data_do_formulario = request.POST.get('data')
+
+        # Recupera os IDs das análises do formulário como uma string
+        analise_ids_str = request.POST.get('analise_ids')
+
+        # Converte a string de IDs em uma lista de inteiros
+        analise_ids = [int(id) for id in analise_ids_str.split(',') if id]
+
+        ids_lista = []
+
+        for id_analise in analise_ids:
+            analise = Analise_Agua_bruta.objects.get(pk=id_analise)
+
+            # Adiciona o objeto à lista em vez de apenas o ID
+            ids_lista.append(analise)
+
+        # Criar PDF
+        buffer = io.BytesIO()
+        cnv = canvas.Canvas(buffer)
+
+        # Definir o tamanho da fonte
+        tamanho_fonte = 30  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(20, 787, "Eficiencia da ETA (água bruta/decantada)")
+
+        tamanho_fonte = 16  # Tamanho da fonte desejado
+
+        estilo = getSampleStyleSheet()["Normal"]
+
+        # Configurando o estilo para negrito
+        estilo.fontName = 'Helvetica-Bold'
+
+        # Definindo o tamanho da fonte
+        estilo.fontSize = tamanho_fonte
+        # Desenhando o texto usando o estilo
+        cnv.setFont("Helvetica-Bold", tamanho_fonte)
+        cnv.drawString(10, 755, "SAAE Ipuã-SP")  # buscar cidade no banco
+
+        # Retornando ao estilo normal
+        cnv.setFont("Helvetica", tamanho_fonte)
+
+        tamanho_fonte = 20  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(10, 730, f"{data_do_formulario}")
+        cnv.drawString(6, 730, f"____________________________________________________")
+
+        a = 10  # horas
+        b = 700  # horas
+        c = 110  # nome operador
+        d = 700  # nome operdor
+        e = 255  # decantada ph
+        f = 700  # decantada ph
+        g = 400  # decantada cor
+        h = 700  # decantada cor
+
+        i = 10  # decantada turbidez
+        j = 680  # decantada turbidez
+        k = 170  # Bruta ph
+        l = 680  # Bruta ph
+        m = 270  # Bruta cor
+        n = 680  # Bruta cor
+        o = 10  # Bruta turbidez
+        p = 680  # Bruta turbidez
+
+        divisaoA = 50
+        divisaoB = 50
+        tamanho_fonte = 12  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+
+        for analise in ids_lista:
+            hora = analise.data_analise_agua.strftime("%H:%M")
+            cnv.drawString(a, b, f"Horario: {hora}")
+            cnv.drawString(c, d, f"Operador: {analise.usuario}")
+            cnv.drawString(e, f, f"pH Decantada: {analise.decantada_ph}")
+            cnv.drawString(g, h, f"Cor Decantada: {analise.decantada_cor}")
+            cnv.drawString(i, j, f"Turbidez Decantada: {analise.decantada_turbidez}")
+            cnv.drawString(k, l, f"pH Bruta: {analise.bruta_ph}")
+            cnv.drawString(m, n, f"pH Bruta: {analise.bruta_turbidez}")
+
+
+            # Atualizar as coordenadas para a próxima iteração
+            b -= 22  # Por exemplo, diminuir a coordenada y para mover para baixo na página
+            d -= 22  # Outra opção para mover para baixo o texto "Cloro"
+            f -= 22
+            h -= 22
+            j -= 22
+            l -= 22
+            n -= 22
+            p -= 22
+
+        cnv.save()
+
+        # Retornar o PDF como uma resposta HTTP
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="PDF_eficiencia_eta.pdf"'
         response.write(buffer.getvalue())
 
     return response
