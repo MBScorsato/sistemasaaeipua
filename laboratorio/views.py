@@ -800,12 +800,47 @@ def monitoramento_diario(request):
         buffer = io.BytesIO()
         cnv = canvas.Canvas(buffer)
 
-        cnv.drawString(20, 20, "Teste")  # Adicione aqui o conteúdo que você deseja no PDF
-
+        # Definir o tamanho da fonte
+        tamanho_fonte = 40  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(90, 787, "Monitoramento Diário")
+        tamanho_fonte = 16  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(10, 755, "Saae Ipuã-SP")  # buscar cidade no banco
+        tamanho_fonte = 20  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(10, 730, f"{data_do_formulario}")
+        cnv.drawString(6, 730, f"____________________________________________________")
+        a = 20  # nome do operador
+        b = 700  # nome do operador
+        c = 290  # cloro
+        d = 700  # cloro
+        e = 365  # fluor
+        f = 700  # fluor
+        g = 440  # ph
+        h = 700  # ph
+        i = 500  # turbidez
+        j = 700  # turbidez
+        k = 200  # horario
+        l = 700  # horario
+        tamanho_fonte = 12  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
         for analise in ids_lista:
+            hora = analise.data_analise_agua.strftime("%H:%M")
+            cnv.drawString(a, b, f"Operador: {analise.usuario}")
+            cnv.drawString(k, l, f"horario: {hora}")
+            cnv.drawString(c, d, f"Cloro: {analise.cloro}")
+            cnv.drawString(e, f, f"Flúor: {analise.fluor}")
+            cnv.drawString(g, h, f"pH: {analise.ph}")
+            cnv.drawString(i, j, f"Turbidez: {analise.turbidez}")
 
-            cnv.drawString(20, 20, f"Cloro: {analise.cloro}")  # Exemplo de como adicionar o atributo 'cloro' ao PDF
-
+            # Atualizar as coordenadas para a próxima iteração
+            b -= 22  # Por exemplo, diminuir a coordenada y para mover para baixo na página
+            d -= 22  # Outra opção para mover para baixo o texto "Cloro"
+            f -= 22
+            h -= 22
+            j -= 22
+            l -= 22
         cnv.save()
 
         # Retornar o PDF como uma resposta HTTP
@@ -822,5 +857,3 @@ def logout_view(request):
     logout(request)
     # Redirecione para onde você deseja após o logout
     return redirect('operadores')
-
-
