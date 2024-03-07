@@ -2,6 +2,7 @@ import cmath
 import datetime
 import io
 from collections import defaultdict
+import pytz
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -866,6 +867,7 @@ def monitoramento_diario(request):
     return response
 
 
+
 def eficiencia_eta(request):
     if request.method == 'GET':
         pdf_analise_agua_bruta = Analise_Agua_bruta.objects.all()
@@ -873,6 +875,13 @@ def eficiencia_eta(request):
         # Criando um dicionário para armazenar as análises agrupadas por data completa
         pdf_analise_agua_por_data = defaultdict(list)
         for analise in pdf_analise_agua_bruta:
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data_analise_agua.astimezone(fuso_horario_desejado)
+
+            # Armazenando a data e hora convertida
+            analise.data_analise_agua = data_e_hora_no_fuso_horario_desejado
+
             data_completa = analise.data_analise_agua.date()
             pdf_analise_agua_por_data[data_completa].append(analise)
 
@@ -932,45 +941,60 @@ def eficiencia_eta(request):
         b = 700  # horas
         c = 110  # nome operador
         d = 700  # nome operdor
-        e = 255  # decantada ph
+        e = 310  # decantada ph
         f = 700  # decantada ph
-        g = 400  # decantada cor
+        g = 450  # decantada cor
         h = 700  # decantada cor
 
         i = 10  # decantada turbidez
         j = 680  # decantada turbidez
         k = 170  # Bruta ph
         l = 680  # Bruta ph
-        m = 270  # Bruta cor
-        n = 680  # Bruta cor
-        o = 10  # Bruta turbidez
-        p = 680  # Bruta turbidez
+        m = 270  # Bruta turbidez
+        n = 680  # Bruta turbidez
+        o = 395  # quantida de agua bruta por segundo
+        p = 680  # quantida de agua bruta por segundo
+
+        q = 10  # quantidade de cal
+        r = 660  # quantidade de cal
+        s = 160 #  quantidade de PAC
+        t = 660  # quantidade de PC
 
         divisaoA = 50
         divisaoB = 50
         tamanho_fonte = 12  # Tamanho da fonte desejado
         cnv.setFontSize(tamanho_fonte)
+        tamanho_lista = len(ids_lista)
 
         for analise in ids_lista:
-            hora = analise.data_analise_agua.strftime("%H:%M")
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data_analise_agua.astimezone(fuso_horario_desejado)
+
+            # Formatando a data e hora para o PDF
+            hora = data_e_hora_no_fuso_horario_desejado.strftime("%H:%M")
             cnv.drawString(a, b, f"Horario: {hora}")
             cnv.drawString(c, d, f"Operador: {analise.usuario}")
             cnv.drawString(e, f, f"pH Decantada: {analise.decantada_ph}")
             cnv.drawString(g, h, f"Cor Decantada: {analise.decantada_cor}")
             cnv.drawString(i, j, f"Turbidez Decantada: {analise.decantada_turbidez}")
             cnv.drawString(k, l, f"pH Bruta: {analise.bruta_ph}")
-            cnv.drawString(m, n, f"pH Bruta: {analise.bruta_turbidez}")
-
+            cnv.drawString(m, n, f"Turbidez Bruta: {analise.bruta_turbidez}")
+            cnv.drawString(o, p, f"Quantidade: {analise.qeta}Litros/segundo")
+            cnv.drawString(q, r, f"Quantidade de cal: {analise.qcal}")
+            cnv.drawString(s, t, f"Quantidade de PAC: {analise.qpac}")
 
             # Atualizar as coordenadas para a próxima iteração
-            b -= 22  # Por exemplo, diminuir a coordenada y para mover para baixo na página
-            d -= 22  # Outra opção para mover para baixo o texto "Cloro"
-            f -= 22
-            h -= 22
-            j -= 22
-            l -= 22
-            n -= 22
-            p -= 22
+            b -= 70  # Por exemplo, diminuir a coordenada y para mover para baixo na página
+            d -= 70  # Outra opção para mover para baixo o texto "Cloro"
+            f -= 70
+            h -= 70
+            j -= 70
+            l -= 70
+            n -= 70
+            p -= 70
+            r -= 70
+            t -= 70
 
         cnv.save()
 

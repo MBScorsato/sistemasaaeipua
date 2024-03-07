@@ -10,9 +10,9 @@
 
 {% block input %}
     <center><br><br><br>
-    <font color="#000000" font="verdana" ><h2>Eficiancia da ETa (água bruta)</h2></font>
+    <font color="#000000" font="verdana" ><h2>Eficiência da ETA (água bruta/decantada)</h2></font>
         <br>
-        <ul class="list-group list-group-flush"><font color=fff0ff>Total de Analises da estação: <b>{{ cont }}</font></b></ul>
+        <ul class="list-group list-group-flush"><font color=fff0ff>Total de Analises da estação (água bruta/decantada): <b>{{ cont }}</font></b></ul>
         <br>
 {% for data, analises in pdf_analise_agua_por_data.items %}
 <div class="card">
