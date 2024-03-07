@@ -772,6 +772,13 @@ def monitoramento_diario(request):
         # Criando um dicionário para armazenar as análises agrupadas por data completa
         pdf_analise_agua_por_data = defaultdict(list)
         for analise in pdf_analise_agua_limpa:
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data_analise_agua.astimezone(fuso_horario_desejado)
+
+            # Armazenando a data e hora convertida
+            analise.data_analise_agua = data_e_hora_no_fuso_horario_desejado
+
             data_completa = analise.data_analise_agua.date()
             pdf_analise_agua_por_data[data_completa].append(analise)
 
@@ -840,7 +847,12 @@ def monitoramento_diario(request):
         tamanho_fonte = 12  # Tamanho da fonte desejado
         cnv.setFontSize(tamanho_fonte)
         for analise in ids_lista:
-            hora = analise.data_analise_agua.strftime("%H:%M")
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data_analise_agua.astimezone(fuso_horario_desejado)
+
+            # Formatando a data e hora para o PDF
+            hora = data_e_hora_no_fuso_horario_desejado.strftime("%H:%M")
             cnv.drawString(a, b, f"Operador: {analise.usuario}")
             cnv.drawString(k, l, f"horario: {hora}")
             cnv.drawString(c, d, f"Cloro: {analise.cloro}")
