@@ -10,7 +10,6 @@ from django.contrib.messages import constants
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
     Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal, Analise_Agua_bruta
@@ -867,7 +866,6 @@ def monitoramento_diario(request):
     return response
 
 
-
 def eficiencia_eta(request):
     if request.method == 'GET':
         pdf_analise_agua_bruta = Analise_Agua_bruta.objects.all()
@@ -957,16 +955,13 @@ def eficiencia_eta(request):
 
         q = 10  # quantidade de cal
         r = 660  # quantidade de cal
-        s = 160 #  quantidade de PAC
+        s = 160  # quantidade de PAC
         t = 660  # quantidade de PC
 
-        divisaoA = 50
-        divisaoB = 50
         tamanho_fonte = 12  # Tamanho da fonte desejado
         cnv.setFontSize(tamanho_fonte)
-        tamanho_lista = len(ids_lista)
 
-        for analise in ids_lista:
+        for idx, analise in enumerate(ids_lista):
             # Convertendo a hora para o fuso horário desejado
             fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
             data_e_hora_no_fuso_horario_desejado = analise.data_analise_agua.astimezone(fuso_horario_desejado)
@@ -995,6 +990,65 @@ def eficiencia_eta(request):
             p -= 70
             r -= 70
             t -= 70
+
+            # Verifica se é necessário criar uma nova página
+            if idx == len(ids_lista) - 1 and b >= 50:  # Se for o último item e ainda houver espaço suficiente na página
+                break  # Permanece na mesma página
+
+            if b < 50:  # Se não houver espaço suficiente na página
+                cnv.showPage()  # Muda para a próxima página
+
+                # Definir o tamanho da fonte
+                tamanho_fonte = 30  # Tamanho da fonte desejado
+                cnv.setFontSize(tamanho_fonte)
+                cnv.drawString(20, 787, "Eficiencia da ETA (água bruta/decantada)")
+
+                tamanho_fonte = 16  # Tamanho da fonte desejado
+
+                estilo = getSampleStyleSheet()["Normal"]
+
+                # Configurando o estilo para negrito
+                estilo.fontName = 'Helvetica-Bold'
+
+                # Definindo o tamanho da fonte
+                estilo.fontSize = tamanho_fonte
+                # Desenhando o texto usando o estilo
+                cnv.setFont("Helvetica-Bold", tamanho_fonte)
+                cnv.drawString(10, 755, "SAAE Ipuã-SP")  # buscar cidade no banco
+
+                # Retornando ao estilo normal
+                cnv.setFont("Helvetica", tamanho_fonte)
+
+                tamanho_fonte = 20  # Tamanho da fonte desejado
+                cnv.setFontSize(tamanho_fonte)
+                cnv.drawString(10, 730, f"{data_do_formulario}")
+                cnv.drawString(6, 730, f"____________________________________________________")
+
+                tamanho_fonte = 12  # Tamanho da fonte desejado
+                cnv.setFontSize(tamanho_fonte)
+
+                a = 10  # horas
+                b = 700  # horas
+                c = 110  # nome operador
+                d = 700  # nome operdor
+                e = 310  # decantada ph
+                f = 700  # decantada ph
+                g = 450  # decantada cor
+                h = 700  # decantada cor
+
+                i = 10  # decantada turbidez
+                j = 680  # decantada turbidez
+                k = 170  # Bruta ph
+                l = 680  # Bruta ph
+                m = 270  # Bruta turbidez
+                n = 680  # Bruta turbidez
+                o = 395  # quantida de agua bruta por segundo
+                p = 680  # quantida de agua bruta por segundo
+
+                q = 10  # quantidade de cal
+                r = 660  # quantidade de cal
+                s = 160  # quantidade de PAC
+                t = 660  # quantidade de PC
 
         cnv.save()
 
