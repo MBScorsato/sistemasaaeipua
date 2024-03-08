@@ -17,8 +17,9 @@ urlpatterns = [
     path('laboratorio/index_relatorio/particulares/externas', views.relatorios, name='relatorios'),
     path('laboratorio/pdf_relatorio/<int:pk>/id_pdf', views.pdf_relatorio, name='pdf_relatorio'),
     path('laboratorio/patrimonio/cadastrado/saae', views.patrimonio_cadastrado, name='patrimonio_cadastrado'),
-    path('laboratorio/index_relatorio', views.index_relatorio, name='index_relatorio'),
-    path('laboratorio/index_relatorio/monitoramento/diario', views.monitoramento_diario, name='monitoramento_diario'),
-    path('laboratorio/index_relatorio/eficiencia/eta', views.eficiencia_eta, name='eficiencia_eta'),
+    path('laboratorio/index_relatorio/pdf', views.index_relatorio, name='index_relatorio'),
+    path('laboratorio/index_relatorio/monitoramento/diario/pdf', views.monitoramento_diario, name='monitoramento_diario'),
+    path('laboratorio/index_relatorio/eficiencia/eta/pdf', views.eficiencia_eta, name='eficiencia_eta'),
+    path('laboratorio/index_relatorio/hidrometro/pdf', views.relatorio_hidrometro, name='relatorio_hidrometro'),
 
 ]

@@ -1,6 +1,9 @@
 import cmath
 import datetime
 import io
+import locale
+import re
+from datetime import datetime
 from collections import defaultdict
 import pytz
 from django.contrib import messages
@@ -12,7 +15,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
     Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
-from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal, Analise_Agua_bruta
+from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal, Analise_Agua_bruta, Hidrometro
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -1068,6 +1071,88 @@ def eficiencia_eta(request):
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="PDF_eficiencia_eta.pdf"'
+        response.write(buffer.getvalue())
+
+    return response
+
+
+def relatorio_hidrometro(request):
+    if request.method == 'GET':
+        pdf_hidrometro = Hidrometro.objects.all()
+
+        # Criando um dicionário para armazenar as análises agrupadas por data completa
+        pdf_analise_agua_por_data = defaultdict(list)
+        for analise in pdf_hidrometro:
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data.astimezone(fuso_horario_desejado)
+
+            # Armazenando a data e hora convertida
+            analise.data_analise_agua = data_e_hora_no_fuso_horario_desejado
+
+            data_completa = analise.data_analise_agua.date()
+            pdf_analise_agua_por_data[data_completa].append(analise)
+
+        cont = len(pdf_hidrometro)
+
+        return render(request, 'relatorio_hidrometro.html',
+                      {'pdf_analise_agua_por_data': dict(pdf_analise_agua_por_data), 'cont': cont})
+    elif request.method == 'POST':
+        data_do_formulario = request.POST.get('data')  # Obtendo a data do formulário
+
+        # Criar PDF
+        buffer = io.BytesIO()
+        cnv = canvas.Canvas(buffer)
+
+        # Definir o tamanho da fonte
+        tamanho_fonte = 30  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+        cnv.drawString(50, 787, "Hidrômetro ETA ")
+
+        tamanho_fonte = 16  # Tamanho da fonte desejado
+
+        estilo = getSampleStyleSheet()["Normal"]
+
+        # Configurando o estilo para negrito
+        estilo.fontName = 'Helvetica-Bold'
+
+        # Definindo o tamanho da fonte
+        estilo.fontSize = tamanho_fonte
+        # Desenhando o texto usando o estilo
+        cnv.setFont("Helvetica-Bold", tamanho_fonte)
+        cnv.drawString(10, 755, "SAAE Ipuã-SP")  # buscar cidade no banco
+
+        # Retornando ao estilo normal
+        cnv.setFont("Helvetica", tamanho_fonte)
+
+        tamanho_fonte = 20  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+
+        # Extrair o dia, mês e ano da string da data usando expressões regulares
+        match = re.match(r'(\d+) de (\w+) de (\d+)', data_do_formulario)
+        dia, mes, ano = match.groups()
+
+        # Mapear o mês para o seu número correspondente
+        meses = {'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04', 'maio': '05', 'junho': '06',
+                 'julho': '07', 'agosto': '08', 'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'}
+        mes_numero = meses[mes.lower()]
+
+        # Formatar a data para exibir apenas o mês e o ano
+        data_formatada = f"{mes} {ano}"
+
+        cnv.drawString(10, 730, f"{mes}  {ano}")
+
+        cnv.drawString(6, 730, f"____________________________________________________")
+
+        tamanho_fonte = 12  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+
+        cnv.save()
+
+        # Retornar o PDF como uma resposta HTTP
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="PDF_hidrometro_eta.pdf"'
         response.write(buffer.getvalue())
 
     return response
