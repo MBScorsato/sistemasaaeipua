@@ -1078,7 +1078,7 @@ def eficiencia_eta(request):
 
 def relatorio_hidrometro(request):
     if request.method == 'GET':
-        pdf_hidrometro = Hidrometro.objects.all()
+        pdf_hidrometro = Hidrometro.objects.all().order_by('-id')
 
         # Criando um dicionário para armazenar as análises agrupadas por data completa
         pdf_analise_agua_por_data = defaultdict(list)
@@ -1097,8 +1097,25 @@ def relatorio_hidrometro(request):
 
         return render(request, 'relatorio_hidrometro.html',
                       {'pdf_analise_agua_por_data': dict(pdf_analise_agua_por_data), 'cont': cont})
+
     elif request.method == 'POST':
         data_do_formulario = request.POST.get('data')  # Obtendo a data do formulário
+        analise_ids_str = request.POST.get('analise_ids')
+
+        # Converte a string de IDs em uma lista de inteiros
+        analise_ids = [int(id) for id in analise_ids_str.split(',') if id]
+
+        ids_lista = []
+
+        for id_analise in analise_ids:
+            analise = Hidrometro.objects.filter(pk=id_analise).order_by('id').first()
+
+            # Adiciona o objeto à lista em vez de apenas o ID
+            if analise:
+                ids_lista.append(analise)
+
+        # Reverte a lista para que os IDs sejam do menor para o maior
+        ids_lista.reverse()
 
         # Criar PDF
         buffer = io.BytesIO()
@@ -1146,6 +1163,49 @@ def relatorio_hidrometro(request):
 
         tamanho_fonte = 12  # Tamanho da fonte desejado
         cnv.setFontSize(tamanho_fonte)
+        diaa = 10
+        diab = 710
+        a = 80
+        b = 710
+        c = 120
+        d = 710
+        e = 245
+        f = 710
+        g = 370
+        h = 710
+        i = 490
+        j =710
+        dia = 1
+
+        tamanho_fonte = 10  # Tamanho da fonte desejado
+        cnv.setFontSize(tamanho_fonte)
+
+        for idx, analise in enumerate(ids_lista):
+            # Convertendo a hora para o fuso horário desejado
+            fuso_horario_desejado = pytz.timezone('America/Sao_Paulo')
+            data_e_hora_no_fuso_horario_desejado = analise.data.astimezone(fuso_horario_desejado)
+
+            # Formatando a data e hora para o PDF
+            hora = data_e_hora_no_fuso_horario_desejado.strftime("%H:%M")
+            cnv.drawString(diaa, diab, f"Marcação: {dia}")
+            cnv.drawString(a, b, f"{hora}")
+            cnv.drawString(c, d, f"{analise.operador}")
+            cnv.drawString(e, f, f"150: {analise.hidrometro_150}")
+            cnv.drawString(g, h, f"200: {analise.hidrometro_200}")
+            cnv.drawString(i, j, f"POÇO: {analise.hidrometro_poco}")
+
+            dia += 1
+            b -= 13
+            d -= 13
+            f -= 13
+            h -= 13
+            j -= 13
+            diab -= 13
+
+
+
+
+
 
         cnv.save()
 
