@@ -880,6 +880,7 @@ def monitoramento_diario(request):
 
     return response
 
+
 @login_required(login_url='operadores')
 def eficiencia_eta(request):
     if request.method == 'GET':
@@ -1075,6 +1076,7 @@ def eficiencia_eta(request):
 
     return response
 
+
 @login_required(login_url='operadores')
 def relatorio_hidrometro(request):
     if request.method == 'GET':
@@ -1174,7 +1176,7 @@ def relatorio_hidrometro(request):
         g = 370
         h = 710
         i = 490
-        j =710
+        j = 710
         dia = 1
 
         tamanho_fonte = 10  # Tamanho da fonte desejado
@@ -1213,9 +1215,43 @@ def relatorio_hidrometro(request):
     return response
 
 
+@login_required(login_url='operadores')
 def analise_dados(request):
     if request.method == 'GET':
-        return render(request, 'analise_dados.html')
+        # Obtendo os dados mais recentes das análises de água tratada
+        dados_agua_tratada = Analise_Agua_tratada.objects.order_by('-id').first()
+        if dados_agua_tratada:
+            dados_agua_tratada_ph = dados_agua_tratada.ph
+            dados_agua_tratada_cloro = dados_agua_tratada.cloro
+            dados_agua_tratada_fluor = dados_agua_tratada.fluor
+            dados_agua_tratada_turbidez = dados_agua_tratada.turbidez
+            dados_agua_tratada_cor = dados_agua_tratada.cor
+        else:
+            dados_agua_tratada_ph = "N/A"
+            dados_agua_tratada_cloro = "N/A"
+            dados_agua_tratada_fluor = "N/A"
+            dados_agua_tratada_turbidez = "N/A"
+            dados_agua_tratada_cor = "N/A"
+
+        # Obtendo os dados mais recentes da análise de água bruta
+        # transformar em STR porque la no banco esta em float e deu erro
+        # este foi a forma que encontrei para tirar o erro e mostrsr no html
+        # mas cabe analise para melhorar o código
+        dados_agua_bruta = Analise_Agua_bruta.objects.order_by('-id').first()
+        if dados_agua_bruta:
+            dados_agua_bruta_pac = str(dados_agua_bruta.qpac)
+        else:
+            dados_agua_bruta_pac = "N/A"
+
+        return render(request, 'analise_dados.html', {'dados_agua_tratada_ph': dados_agua_tratada_ph,
+                                                      'dados_agua_tratada_cloro': dados_agua_tratada_cloro,
+                                                      'dados_agua_tratada_fluor': dados_agua_tratada_fluor,
+                                                      'dados_agua_tratada_turbidez': dados_agua_tratada_turbidez,
+                                                      'dados_agua_tratada_cor': dados_agua_tratada_cor,
+                                                      'dados_agua_bruta_pac': dados_agua_bruta_pac,
+                                                      })
+
+
     elif request.method == 'POST':
         return render(request, 'analise_dados.html')
 
