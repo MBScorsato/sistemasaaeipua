@@ -880,7 +880,7 @@ def monitoramento_diario(request):
 
     return response
 
-
+@login_required(login_url='operadores')
 def eficiencia_eta(request):
     if request.method == 'GET':
         pdf_analise_agua_bruta = Analise_Agua_bruta.objects.all()
@@ -1075,7 +1075,7 @@ def eficiencia_eta(request):
 
     return response
 
-
+@login_required(login_url='operadores')
 def relatorio_hidrometro(request):
     if request.method == 'GET':
         pdf_hidrometro = Hidrometro.objects.all().order_by('-id')
@@ -1202,11 +1202,6 @@ def relatorio_hidrometro(request):
             j -= 13
             diab -= 13
 
-
-
-
-
-
         cnv.save()
 
         # Retornar o PDF como uma resposta HTTP
@@ -1216,6 +1211,13 @@ def relatorio_hidrometro(request):
         response.write(buffer.getvalue())
 
     return response
+
+
+def analise_dados(request):
+    if request.method == 'GET':
+        return render(request, 'analise_dados.html')
+    elif request.method == 'POST':
+        return render(request, 'analise_dados.html')
 
 
 # sair do sistema
