@@ -22,6 +22,11 @@ class Aviso(models.Model):
     def __str__(self):
         return self.titulo
 
+    class Meta:
+        verbose_name = "Aviso no site"
+
+        verbose_name_plural = "Aviso no site"
+
 
 class Contato(models.Model):
     cidade_estado = models.CharField(max_length=100)

@@ -10,6 +10,12 @@ class Numero_Media(models.Model):
     def __str__(self):
         return str(self.n)
 
+    class Meta:
+        verbose_name = "Para fazer média no app laboratorio"
+
+    class Meta:
+        verbose_name_plural = "Para fazer média no app laboratorio"
+
 
 class Controle_Operacional(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -20,27 +26,29 @@ class Controle_Operacional(models.Model):
     turbidez_estacao = models.FloatField()
     relatorio = models.TextField()
 
-    class Meta:
-        verbose_name = "Controle Operacional"
-        verbose_name_plural = "Controle Operacional"
-
     def __str__(self):
         # Obtendo o nome de usuário do usuário relacionado
         nome_usuario = self.usuario.username
 
         return f"{nome_usuario}"
 
+    class Meta:
+        verbose_name = "Controle Operacional"
+
+        verbose_name_plural = "Controle Operacional"
+
 
 class Cadastro_Reservatorio(models.Model):
     reservatorio_cadastrado = models.CharField(max_length=200)
     litro = models.IntegerField()
 
-    class Meta:
-        verbose_name = "Cadastro Reservatório"
-        verbose_name_plural = "Cadastro Reservatório"
-
     def __str__(self):
         return f'Reservatório: {self.reservatorio_cadastrado}'
+
+    class Meta:
+        verbose_name = "Cadastro Reservatório"
+
+        verbose_name_plural = "Cadastro Reservatório"
 
 
 class Reservatorio(models.Model):
@@ -58,9 +66,10 @@ class Reservatorio(models.Model):
         nome_usuario = self.usuario.username
         return f'Operador: {nome_usuario} - Reservatório: {self.reservatorio.reservatorio_cadastrado}'
 
-        class Meta:
-            verbose_name = "Reservatório"
-            verbose_name_plural = "Reservatório"
+    class Meta:
+        verbose_name = "Reservatório"
+
+        verbose_name_plural = "Reservatório"
 
 
 class Anotacoes(models.Model):
@@ -70,11 +79,7 @@ class Anotacoes(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.titulo
-
-    class Meta:
-        verbose_name = "Anotações"
-        verbose_name_plural = "Anotações"
+        return f'Anotações: {self.titulo}'
 
 
 class Organiza_tarefa(models.Model):
@@ -116,9 +121,9 @@ class Banco_Reservatorio_temporal(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     observacao = models.TextField()
 
+    def __str__(self):
+        return f'Cidade: {self.cidade}, Endereço: {self.rua}, Nome: {self.nome}'
+
     class Meta:
         verbose_name = "Relatorio"
         verbose_name_plural = "Relatorio"
-
-    def __str__(self):
-        return f'Cidade: {self.cidade}, Endereço: {self.rua}, Nome: {self.nome}'

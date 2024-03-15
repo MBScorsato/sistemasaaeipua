@@ -11,3 +11,9 @@ class EtaMidia(models.Model):
     def __str__(self):
         return f"{self.titulo} - {self.data_criacao}"
 
+    class Meta:
+        verbose_name = "Conheça a ETA"
+
+    class Meta:
+        verbose_name_plural = "Conheça a ETA"
+

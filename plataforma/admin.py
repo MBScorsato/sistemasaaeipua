@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.utils.timezone import activate
-from .models import Analise_Agua_tratada, Analise_Agua_bruta, Parametro, Cal_Quantidade, Estoque_Cal, \
-    Tabela_estoque_cal, Hidrometro, SaidaCaminhaPipa, Mensagem, Laboratorio
+from .models import Analise_Agua_tratada, Analise_Agua_bruta, Parametro, Cal_Quantidade, Estoque_Cal, Hidrometro, SaidaCaminhaPipa, Mensagem, Laboratorio
 
 
 class Analise_Agua_tratadaAdmin(admin.ModelAdmin):
@@ -45,7 +44,6 @@ admin.site.register(Analise_Agua_bruta, Analise_Agua_brutadaAdmin)
 admin.site.register(Parametro)
 admin.site.register(Cal_Quantidade, Cal_QuantidadeAdmin)
 admin.site.register(Estoque_Cal, Estoque_CalAdmin)
-admin.site.register(Tabela_estoque_cal)
 admin.site.register(Hidrometro)
 admin.site.register(SaidaCaminhaPipa)
 admin.site.register(Mensagem)

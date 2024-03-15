@@ -59,7 +59,7 @@ class OperadoresAviso(models.Model):
     aviso = models.TextField()
 
     def __str__(self):
-        return self.aviso
+        return f'Aviso para os operadors: {self.aviso}'
 
 
 class Parametro(models.Model):
@@ -94,6 +94,12 @@ class Cal_Quantidade(models.Model):
     def __str__(self):
         nome_usuario = self.operador.username
         return f"Operador: {nome_usuario} - 1 saco de cal"
+
+    class Meta:
+
+        verbose_name = "Sacos  de cal usada pelo operador"
+
+        verbose_name_plural = "Sacos  de cal usada pelo operador"
 
 
 # essa class salva o abastecimeto no estoque
@@ -181,6 +187,12 @@ class Mensagem(models.Model):
 
     def __str__(self):
         return f"{self.operador} diz: {self.mensagem}"
+
+    class Meta:
+
+        verbose_name = "chat dos operadores"
+
+        verbose_name_plural = "chat dos operadores"
 
 
 # esta class tem um valor booleano
