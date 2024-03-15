@@ -22,5 +22,6 @@ urlpatterns = [
     path('laboratorio/index_relatorio/eficiencia/eta/pdf', views.eficiencia_eta, name='eficiencia_eta'),
     path('laboratorio/index_relatorio/hidrometro/pdf', views.relatorio_hidrometro, name='relatorio_hidrometro'),
     path('laboratorio/index_relatorio/analise/dados', views.analise_dados, name='analise_dados'),
+    path('laboratorio/registro/manutencao/externa', views.registro_manutencao_externa, name='registro_manutencao_externa'),
 
 ]

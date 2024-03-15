@@ -1256,6 +1256,13 @@ def analise_dados(request):
         return render(request, 'analise_dados.html')
 
 
+def registro_manutencao_externa(request):
+    if request.method == 'GET':
+        return render(request, 'registro_manutencao_externa.html')
+    elif request.method == 'POST':
+        return render(request, 'registro_manutencao_externa.html')
+
+
 # sair do sistema
 def logout_view(request):
     logout(request)
