@@ -2,11 +2,31 @@
 {% load static %}
 {% block title%}Analises básicas interna{% endblock %}
 {% block body %}
+ <style>
+    .scroll-box {
+      width: 540px;
+      height: 700px;
+      overflow: auto; /* Adiciona uma barra de rolagem quando o conteúdo exceder as dimensões da caixa */
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+  </style>
     <center>
 <div class="card">
   <div class="card-body"><br><br>
       <h1><b>Manutenção Externa</b></h1>
   </div></div></center>
+
+      <div class="message">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert {{message.tags}}">
+            <center>{{message}}</center>
+        </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
 {% endblock %}
 
 {% block input %}
@@ -16,18 +36,36 @@
       <div class="col-sm">
         <h2><font color="yellow">Qual foi a Manutenção?</font></h2>
         <p><font color="blue" face="verdana">Detalhe a manutenção realizada</font></p>
-        <input type="text" name="titulo" placeholder="Título" style="width: 550px;"><br><br>
-        <input type="text" name="local" placeholder="Local da Manutenção" style="width: 550px;"><br><br>
-        <textarea cols="72" rows="7" placeholder="Descreva a forma que foi feita a Manutenção"></textarea><br><br>
-        <input type="submit" value="   Salvar   "><br><br>
 
+        <form method="post" action="{% url 'registro_manutencao_externa' %}">{% csrf_token %}
+          <input type="text" name="titulo" placeholder="Título" style="width: 550px;"><br><br>
+          <input type="text" name="local" placeholder="Local da Manutenção" style="width: 550px;"><br><br>
+          <textarea cols="72" rows="7" name="descreva_manutencao" placeholder="Descreva a forma que foi feita a Manutenção"></textarea><br>
+          <input type="submit" value="   Salvar   "><br><br><hr>
+        </form>
 
 
       </div>
       <div class="col-sm">
         <h2><font color="yellow">Aqui está a lista de Manutenção</font></h2>
-        <p><font color="blue" face="verdana">Aqui está a lista de Manutenção realizada</font></p>
         <hr>
+
+  <div class="scroll-box">
+        {% if r_externo %}
+        {% for item in r_externo %}
+            <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.titulo_registro }}</h5>
+              <p class="card-text">{{ item.descreva }}</p>
+              <p>{{ item.localizacao_manutecao }}</p>
+              <p>{{ item.data }}, -> {{ item.usuario }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+    <i>Sem nem uma anotação</i>
+      {% endif %}
+  </div>
       </div>
     </div>
   </div>

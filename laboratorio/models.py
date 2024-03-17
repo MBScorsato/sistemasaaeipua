@@ -127,3 +127,18 @@ class Banco_Reservatorio_temporal(models.Model):
     class Meta:
         verbose_name = "Relatorio"
         verbose_name_plural = "Relatorio"
+
+
+class Registro_manutencao_externa(models.Model):
+    titulo_registro = models.CharField(max_length=40)
+    localizacao_manutecao = models.CharField(max_length=30)
+    descreva = models.TextField()
+    data = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.titulo_registro
+
+    class Meta:
+        verbose_name = "Registro de manutenção externa"
+        verbose_name_plural = "Registro de manutenção externa"

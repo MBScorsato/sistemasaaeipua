@@ -14,7 +14,7 @@
 {% endblock %}
 
 
-{% block input %}<
+{% block input %}
 <center>
     <form action="{% url 'anotacoes_gerais' %}" method="post">{% csrf_token %}
         <b><font color="#ffffff">Título</font></b> <input type="text" name="titulo" placeholder="título" style="width: 300px;">

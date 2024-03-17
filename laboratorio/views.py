@@ -3,7 +3,6 @@ import datetime
 import io
 import locale
 import re
-from datetime import datetime
 from collections import defaultdict
 import pytz
 from django.contrib import messages
@@ -14,12 +13,13 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from laboratorio.models import Numero_Media, Controle_Operacional, Cadastro_Reservatorio, Reservatorio, Anotacoes, \
-    Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal
+    Organiza_tarefa, Informacoes_Analises_Basicas_Interna, Banco_Reservatorio_temporal, Registro_manutencao_externa
 from plataforma.models import Analise_Agua_tratada, Cal_Quantidade, Tabela_estoque_cal, Analise_Agua_bruta, Hidrometro
-from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from reportlab.pdfgen import canvas
+from datetime import datetime
+from django.utils import timezone
 
 
 # esta função aplica se para calcular a diferença de cal em horas
@@ -1258,10 +1258,46 @@ def analise_dados(request):
 
 def registro_manutencao_externa(request):
     if request.method == 'GET':
-        return render(request, 'registro_manutencao_externa.html')
-    elif request.method == 'POST':
-        return render(request, 'registro_manutencao_externa.html')
+        r_externo = Registro_manutencao_externa.objects.all().order_by('-id')
+        print(r_externo)
+        return render(request, 'registro_manutencao_externa.html', {'r_externo': r_externo,
 
+                                                                    })
+    elif request.method == 'POST':
+
+        nome = request.user
+
+        titulo = request.POST.get('titulo')
+        local = request.POST.get('local')
+        descreva_manutencao = request.POST.get('descreva_manutencao')
+
+        if not all([titulo, local, descreva_manutencao, ]):
+            messages.error(request, 'OBRIGATÓRIO PREENCHER')
+            r_externo = Registro_manutencao_externa.objects.all().order_by('-id')
+
+            return render(request, 'registro_manutencao_externa.html', {'r_externo': r_externo,
+
+                                                                    })
+
+        try:
+            r_externo = Registro_manutencao_externa(titulo_registro=titulo,
+                                                    localizacao_manutecao=local,
+                                                    descreva=descreva_manutencao,
+                                                    data=timezone.now(),
+                                                    usuario=nome,
+                                           )
+            r_externo.save()
+            messages.success(request, 'Sua nota foi salva com sucesso!')
+
+        except Exception as e:
+            print("Erro ao salvar:", e)  # Isso imprimirá informações sobre o erro no console do servidor
+            messages.warning(request, 'Provável erro no sistema, tente outra vez!')
+
+        r_externo = Registro_manutencao_externa.objects.all().order_by('-id')
+
+        return render(request, 'registro_manutencao_externa.html', {'r_externo': r_externo,
+
+                                                                    })
 
 # sair do sistema
 def logout_view(request):
