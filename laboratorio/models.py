@@ -142,3 +142,19 @@ class Registro_manutencao_externa(models.Model):
     class Meta:
         verbose_name = "Registro de manutenção externa"
         verbose_name_plural = "Registro de manutenção externa"
+
+
+class Registro_patrimonio(models.Model):
+    objeto = models.CharField(max_length=80)
+    funcao_do_objeto = models.CharField(max_length=200)
+    em_uso = models.BooleanField(default=False)
+    local_de_uso = models.CharField(max_length=100)
+    data = models.DateTimeField(default=timezone.now)
+
+
+    def __str__(self):
+        return self.objeto
+
+    class Meta:
+        verbose_name = "Registro de Patrimônio"
+        verbose_name_plural = "Registro de Patrimônio"

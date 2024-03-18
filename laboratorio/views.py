@@ -1169,11 +1169,11 @@ def relatorio_hidrometro(request):
         diab = 710
         a = 80
         b = 710
-        c = 120
+        c = 150
         d = 710
-        e = 245
+        e = 295
         f = 710
-        g = 370
+        g = 390
         h = 710
         i = 490
         j = 710
@@ -1189,7 +1189,7 @@ def relatorio_hidrometro(request):
 
             # Formatando a data e hora para o PDF
             hora = data_e_hora_no_fuso_horario_desejado.strftime("%H:%M")
-            cnv.drawString(diaa, diab, f"Marcação: {dia}")
+            cnv.drawString(diaa, diab, f"Dia: {dia}")
             cnv.drawString(a, b, f"{hora}")
             cnv.drawString(c, d, f"{analise.operador}")
             cnv.drawString(e, f, f"150: {analise.hidrometro_150}")

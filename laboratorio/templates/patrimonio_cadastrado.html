@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>patrimonio_cadastrado</title>
-</head>
-<body>
-patrimonio_cadastrado
-</body>
-</html>
+{% extends 'base3.html' %}
+{% load static %}
+
+{% block title %}
+    Patrimônio Cadastrado
+{% endblock %}
+
+{% block body %}<br><br><br>
+ <style>
+    .custom-card {
+      background-color: #ffffff; /* Cor de fundo cinza claro */
+    }
+  </style>
+<center>
+    <font color="#000000" font="verdana" ><h2>Patrimônio Cadastrado</h2></font>
+</center>
+<hr>
+{% endblock %}
+
+{% block input %}
+<div class="container mt-6">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="card custom-card">
+        <div class="card-body">
+          <h5 class="card-title">Patrimônio Lista</h5>
+          <p class="card-text">xxxx, xxxx, xxxx,</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
