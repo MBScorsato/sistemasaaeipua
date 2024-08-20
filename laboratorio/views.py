@@ -441,23 +441,24 @@ def calculadora(request):
 def anotacoes_gerais(request):
     if request.method == 'GET':
         return render(request, 'anotacoes_gerais.html')
+
     elif request.method == 'POST':
         nome = request.user
-
         titulo = request.POST.get('titulo')
         nota = request.POST.get('nota')
 
         # Verifica se todos os campos do formulário foram preenchidos
-        if not all([nota, titulo]):
+        if not all([titulo, nota]):
             messages.error(request, 'Preencha todas as informações corretamente')
             return render(request, 'anotacoes_gerais.html')
 
         try:
-            salvar_nota_titulo = Anotacoes(titulo=titulo,
-                                           nota=nota,
-                                           data=datetime.datetime.now(),
-                                           usuario=nome
-                                           )
+            salvar_nota_titulo = Anotacoes(
+                titulo=titulo,
+                nota=nota,
+                data=datetime.now(),  # Usando datetime.now() da importação ajustada
+                usuario=nome
+            )
             salvar_nota_titulo.save()
             messages.success(request, 'Sua nota foi salva com sucesso!')
 
@@ -466,7 +467,6 @@ def anotacoes_gerais(request):
             messages.warning(request, 'Provável erro no sistema, tente outra vez!')
 
         return render(request, 'anotacoes_gerais.html')
-
 
 # esta função esta ligada ou seja é filha da função 'def analises_basica_interna'
 # ela é responsavel por 'ver' anotações feitas pelos operadoes ou tecnicos que tem
@@ -517,10 +517,10 @@ def organizador_tarefas(request):
 
         try:
             # Convertendo a string da data para um objeto datetime
-            data_formatada = datetime.datetime.strptime(data_selecionada, '%Y-%m-%d').date()
+            data_formatada = datetime.strptime(data_selecionada, '%Y-%m-%d').date()
 
             salvar_lembrete = Organiza_tarefa(
-                data_agora=timezone.now(),
+                data_agora=timezone.now(),  # Obtém a data e hora atuais com timezone
                 usuario=nome,
                 data_selecionada=data_formatada,
                 lembrete=lembrete,
@@ -528,7 +528,9 @@ def organizador_tarefas(request):
             )
             salvar_lembrete.save()
             messages.add_message(request, constants.SUCCESS, 'Lembrete salvo com sucesso')
-
+        except Exception as e:
+            # Captura e exibe qualquer erro que ocorrer
+            messages.add_message(request, constants.ERROR, f'Erro ao salvar lembrete: {str(e)}')
         except ValueError as e:
             # Se houver um erro ao converter a data
             print("Erro ao converter a data:", e)

@@ -1,7 +1,7 @@
-/* Estilo para o corpo da página */
 body {
-    background-image: linear-gradient(70deg, black, #ffffff);
+    background: linear-gradient(to right, #00005b, #00002d); /* Gradiente de azul escuro */
 }
+
 
 /* Estilo para todos os inputs do tipo "number" e "text" */
 input[type="number"],

@@ -1,7 +1,4 @@
-/* Estilo para o corpo da página */
-body {
-    background-image: linear-gradient(35deg, #000000, #ffffff);
-}
+
 
 /* Estilo para todos os inputs do tipo "number" e "text" */
 input[type="number"],

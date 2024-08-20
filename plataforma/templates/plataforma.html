@@ -81,7 +81,7 @@
         </tr>
     </table>
         {% endfor %}
-<hr>
+<br>
     {% if avisos %}
       <div class="card">
       <div class="card-body">
@@ -102,17 +102,19 @@
           </div>
 
       </div>
-      </div><br>
-<span class="badge rounded-pill text-bg-dark" style="font-size: 23px;">
+      </div>
+        <br>
+        <center>
+<span class="badge rounded-pill text-bg-dark" style="font-size: 17px;">
     <center>{{ultimo_operador}} adicionou cal pela última vez no dia {{ultimo_data}}</center>
 </span>
+        </center>
+        <br>
 
-
-<br><br>
 <center>
         <div class="card">
             <div class="card-body">
-                <font color="blue"><b>Descrição do dia: {{ descricao_agora }},  temperatura: {{ temperatura_html }}</b></font>
+                <font color="green" size="4"><b>Descrição do dia: {{ descricao_agora }},  temperatura: {{ temperatura_html }}</b></font>
             </div>
         </div>
 </center>
