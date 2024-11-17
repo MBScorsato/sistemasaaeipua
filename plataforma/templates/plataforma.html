@@ -25,11 +25,12 @@
             {% for dados in agua_tratada_grafico_vetor %}
             <center>
                     <div class="dados_grafico">
-                    <div class="card text-bg-primary mb-3" style="max-width: 21rem;">
+                    <div class="card text-bg-primary mb-2" style="max-width: 21rem;">
                     <div class="card-header"> <h6>{{ dados.usuario }} | {{ dados.data_analise_agua }}</h6></div>
                     <div class="card-body">
                         pH:  {{ dados.ph }}<br>
                         Cloro:  {{ dados.cloro }}<br>
+                        Flúor: {{ dados.fluor }}<br>
                         Turbidez:  {{ dados.turbidez }}
                     </div>
                     </div>
