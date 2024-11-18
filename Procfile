@@ -1,0 +1,1 @@
+web: gunicorn sistemasaaeipua-clone01.wsgi --log-file -
